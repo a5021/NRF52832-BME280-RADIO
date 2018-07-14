@@ -36,7 +36,7 @@
 // allowed values for `BITS' are: 0, 8, 16, 24
 #define NRF_RADIO_SET_CRC(BITS) NRF_RADIO->CRCCNF = BITS / 8; NRF_RADIO->CRCINIT = CRCINIT ## BITS; NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
 
-#define BME280_I2C_ADDR_PRIM	            0x76
+#define BME280_I2C_ADDR_PRIM	          0x76
 
 #define BME280_CHIP_ID                    0x60
 #define BME280_RESET_CMD                  0xB6
@@ -430,8 +430,6 @@ int main(void) {
 
   NRF_RTC2->TASKS_START = 1;
   
-  //  static uint32_t a_st, b_st;
-
   while (1) {
  
     bme280_write(CTRL_MEAS_REG, (BME280_OVERSAMPLING_1X << BME280_CTRL_TEMP_POS) | (BME280_OVERSAMPLING_1X << BME280_CTRL_PRESS_POS) | BME280_FORCED_MODE);
