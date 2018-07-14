@@ -5,36 +5,36 @@
 #endif
 #include "nrf.h"
 
-#define SDA_PIN          26
-#define SCL_PIN          27
+#define NRF_FREQ_CHANNEL                  99
 
-#define UART_TX_PIN      6
+#define SDA_PIN                           26
+#define SCL_PIN                           27
 
-#define NRF_TWIMx        NRF_TWIM1
-#define NRF_TWIx         NRF_TWI1
-#define NRF_TIMERy       NRF_TIMER2
+#define UART_TX_PIN                       6
 
-#define NRF_FREQ_CHANNEL 99
+#define NRF_TWIMx                         NRF_TWIM1
+#define NRF_TWIx                          NRF_TWI1
+#define NRF_TIMERy                        NRF_TIMER2
 
-#define SDA_PIN_INIT_CONF        SCL_PIN_INIT_CONF
+#define WAIT_FOR_EVENT(EVT)               while((EVT) == 0); EVT = 0
 
-#define WAIT_FOR_EVENT(EVT)  while((EVT) == 0); EVT = 0
+#define TWI_ERROR                         0
+#define TWI_OK                            !TWI_ERROR
 
-#define TWI_ERROR        0
-#define TWI_OK           !TWI_ERROR
-
-#define CRCINIT0  0x0UL
-#define CRCPOLY0  0x0UL
-#define CRCINIT8  0xFFUL
-#define CRCPOLY8  0x107UL
-#define CRCINIT16 0xFFFFUL
-#define CRCPOLY16 0x11021UL
+#define CRCINIT0                          0x0UL
+#define CRCPOLY0                          0x0UL
+#define CRCINIT8                          0xFFUL
+#define CRCPOLY8                          0x107UL
+#define CRCINIT16                         0xFFFFUL
+#define CRCPOLY16                         0x11021UL
 // width=24 poly=0x00065b init=0x555555 refin=true refout=true xorout=0x000000 check=0xc25a56 residue=0x000000 name="CRC-24/BLE"
-#define CRCINIT24 0x555555UL
-#define CRCPOLY24 0x00065bUL
+#define CRCINIT24                         0x555555UL
+#define CRCPOLY24                         0x00065bUL
 
-// allowed values for `BITS' are: 0, 8, 16, 24
-#define NRF_RADIO_SET_CRC(BITS) NRF_RADIO->CRCCNF = BITS / 8; NRF_RADIO->CRCINIT = CRCINIT ## BITS; NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
+// allowed value for `BITS' is: 0, 8, 16, 24
+#define NRF_RADIO_SET_CRC(BITS)           NRF_RADIO->CRCCNF = BITS / 8;        \
+                                          NRF_RADIO->CRCINIT = CRCINIT ## BITS;\
+                                          NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
 
 #define BME280_I2C_ADDR_PRIM	          0x76
 
@@ -109,7 +109,7 @@ typedef struct {
 static unsigned char i2c_status;
 
 void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
-  
+
   NRF_RADIO->FREQUENCY = freq;                    /* Frequency                               */
   NRF_RADIO->MODE = RADIO_MODE_MODE_Nrf_2Mbit;    /* Data rate and modulation                */
   // NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Neg20dBm;
@@ -124,15 +124,15 @@ void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
     (RADIO_PCNF1_ENDIAN_Msk)                  |   /* Most significant bit on air first       */
     (2 << RADIO_PCNF1_BALEN_Pos)              |   /* Base address length in number of bytes  */
     (32 << RADIO_PCNF1_MAXLEN_Pos)                /* Max payload size in bytes               */
-  );  
-  
+  );
+
   NRF_RADIO->BASE0 = 0xE7E7E7E7;                  /* Base address 0                          */
   NRF_RADIO->PREFIX0 = 0xE7;                      /* Prefixes bytes for logical addresses    */
   NRF_RADIO->RXADDRESSES = 0x01;                  /* Receive address select                  */
 
   NRF_RADIO_SET_CRC(16);
-  
-  NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Packet pointer                          */	
+
+  NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Packet pointer                          */
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
 
@@ -164,18 +164,18 @@ void __STATIC_INLINE init_rtc(void) {
     NRF_UART0->EVENTS_TXDRDY = 0x0UL;
     NRF_UART0->TASKS_STARTTX = 0x1UL;
   }
-  
+
   #define UART_PUTC(C)	                              \
     NRF_UART0->TXD = C;                               \
     WAIT_FOR_EVENT(NRF_UART0->EVENTS_TXDRDY)
-  
+
   uint8_t __STATIC_INLINE uart_puts(char *s) {
     while (*s != 0) {
       UART_PUTC(*s++);
     }
     return !0;
   }
-  
+
   #define uprintf(...) for(char _b[100]; snprintf(_b, sizeof(_b), __VA_ARGS__), uart_puts(_b), 0;){}
 #endif
 
@@ -325,7 +325,7 @@ uint32_t __STATIC_INLINE compensate_humidity(uint32_t u_hum,  bme280_calib_data_
   return humidity;
 }
 
-void __STATIC_INLINE sleep(void) { 
+void __STATIC_INLINE sleep(void) {
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   NRF_POWER->TASKS_LOWPWR = 1;
   // __SEV();
@@ -348,10 +348,10 @@ static __INLINE void init_clock(void) {
     NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
     NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_LFCLKSTART    = 1;
-  
-		/* Wait for the external oscillator to start up */
+
+      /* Wait for the external oscillator to start up */
     while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
-  }	
+  }
 }
 
 
@@ -362,7 +362,7 @@ static __INLINE void init_clock(void) {
 // 	  (TIMER_SHORTS_COMPARE0_CLEAR_Enabled << TIMER_SHORTS_COMPARE0_CLEAR_Pos)
 // 	);
 // };
-// 
+//
 // __STATIC_INLINE void delay_us(uint32_t us) {
 //   NRF_TIMER2->CC[0] = us;
 // 	NRF_TIMER2->TASKS_START = 1;
@@ -380,7 +380,7 @@ int main(void) {
     uint32_t h;
   } __attribute__((packed)) payload_buf = {.l = 12, .i = 6};
 
-  init_clock();  
+  init_clock();
   init_twi(BME280_I2C_ADDR_PRIM);
   init_rtc();
   // init_timer();
@@ -388,11 +388,11 @@ int main(void) {
 #ifdef USE_UART
   init_uart();
 #endif
-  
+
   SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
   __SEV();
   __WFE();
-  
+
   bme280_calib_data_t c_data;
   uint8_t buf[TEMP_PRESS_CALIB_DATA_LEN];
 
@@ -405,7 +405,7 @@ int main(void) {
       NRF_RTC2->TASKS_START = 1                                              ,
 
       sleep()                                                                ,
-  
+
       NRF_RTC2->EVENTS_COMPARE[1] = 0                                        ,
       NRF_RTC2->TASKS_STOP = 1                                               ,
       NRF_RTC2->TASKS_CLEAR = 1                                              ,
@@ -425,17 +425,17 @@ int main(void) {
     ! bme280_write(CONFIG_REG, BME280_FILTER_COEFF_OFF << BME280_FILTER_POS)               ||
     ! bme280_write(CTRL_HUM_REG, BME280_OVERSAMPLING_1X << BME280_CTRL_HUM_POS)
   );
-  
+
   init_radio(NRF_FREQ_CHANNEL, (uint8_t*)&payload_buf);
 
   NRF_RTC2->TASKS_START = 1;
-  
+
   while (1) {
- 
+
     bme280_write(CTRL_MEAS_REG, (BME280_OVERSAMPLING_1X << BME280_CTRL_TEMP_POS) | (BME280_OVERSAMPLING_1X << BME280_CTRL_PRESS_POS) | BME280_FORCED_MODE);
 
     sleep();
-	  
+
     NRF_RTC2->EVENTS_COMPARE[1] = 0;
     bme280_read(DATA_REG, buf, P_T_H_DATA_LEN);
     NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Disabled << TWI_ENABLE_ENABLE_Pos;
@@ -444,16 +444,16 @@ int main(void) {
     payload_buf.p = compensate_pressure(PRESS_EXP(buf), &c_data);
     payload_buf.h = compensate_humidity(HUM_EXP(buf),  &c_data);
     payload_buf.i = ((((payload_buf.i >> 1) + 1) << 1) & 0x06) | 1;
-    
+
 #ifdef USE_UART
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
     NRF_UART0->TASKS_STARTTX = 1;
     uprintf("%d.%02dC,\t\t %d.%02d Pa / %d.%02d mmHg,\t %d.%02d%%\t D/I = %u/%u 0x%02X  0x%02X\r\n", payload_buf.t / 100, payload_buf.t % 100, payload_buf.p / 100, payload_buf.p % 100, payload_buf.p / 13332, payload_buf.p % 13332 * 100 / 13332, payload_buf.h / 1000, payload_buf.h % 1000, sizeof(s), payload_buf.i, a_st, NRF_CLOCK->HFCLKSTAT);
 #endif
-    
+
     NRF_RADIO->EVENTS_END = 0;
     NRF_RADIO->TASKS_START = 1;
-    
+
     WAIT_FOR_EVENT(NRF_RADIO->EVENTS_END);
 
 #ifdef USE_UART
@@ -461,25 +461,25 @@ int main(void) {
     NRF_UART0->TASKS_STOPTX = 1;
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Disabled;
 #endif
-   
+
     NRF_RADIO->TASKS_DISABLE = 1;
     WAIT_FOR_EVENT(NRF_RADIO->EVENTS_DISABLED);
-    
+
     NRF_CLOCK->TASKS_HFCLKSTOP = 1;
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    
+
     sleep();
-    
+
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_HFCLKSTART    = 1;
     while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
 
     NRF_RADIO->EVENTS_READY = 0;
     NRF_RADIO->TASKS_TXEN = 1;
-    while (NRF_RADIO->EVENTS_READY == 0);    
+    while (NRF_RADIO->EVENTS_READY == 0);
 
     NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Enabled << TWI_ENABLE_ENABLE_Pos;
-    
+
     NRF_RTC2->EVENTS_COMPARE[0] = 0;
     NRF_RTC2->TASKS_CLEAR = 1;
  }
