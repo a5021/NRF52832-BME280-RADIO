@@ -36,25 +36,25 @@
                                           NRF_RADIO->CRCINIT = CRCINIT ## BITS;\
                                           NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
 
-#define BME280_I2C_ADDR_PRIM	          0x76
+#define BME280_I2C_ADDR_PRIM              0x76
 
 #define BME280_CHIP_ID                    0x60
 #define BME280_RESET_CMD                  0xB6
 
-#define	BME280_FORCED_MODE		  0x01
+#define	BME280_FORCED_MODE                0x01
 
 #define BME280_FILTER_POS                 0x02
 #define BME280_SENSOR_MODE_POS	          0x00
-#define BME280_CTRL_HUM_POS		  0x00
-#define BME280_CTRL_PRESS_POS	          0x02
-#define BME280_CTRL_TEMP_POS	          0x05
+#define BME280_CTRL_HUM_POS               0x00
+#define BME280_CTRL_PRESS_POS             0x02
+#define BME280_CTRL_TEMP_POS              0x05
 
-#define BME280_NO_OVERSAMPLING		  0x00
-#define BME280_OVERSAMPLING_1X		  0x01
-#define BME280_OVERSAMPLING_2X		  0x02
-#define BME280_OVERSAMPLING_4X		  0x03
-#define BME280_OVERSAMPLING_8X		  0x04
-#define BME280_OVERSAMPLING_16X		  0x05
+#define BME280_NO_OVERSAMPLING            0x00
+#define BME280_OVERSAMPLING_1X            0x01
+#define BME280_OVERSAMPLING_2X            0x02
+#define BME280_OVERSAMPLING_4X            0x03
+#define BME280_OVERSAMPLING_8X            0x04
+#define BME280_OVERSAMPLING_16X           0x05
 
 #define BME280_FILTER_COEFF_OFF           0x00
 #define BME280_FILTER_COEFF_2             0x01
@@ -110,10 +110,10 @@ static unsigned char i2c_status;
 
 void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
 
-  NRF_RADIO->FREQUENCY = freq;                    /* Frequency                               */
-  NRF_RADIO->MODE = RADIO_MODE_MODE_Nrf_2Mbit;    /* Data rate and modulation                */
+  NRF_RADIO->FREQUENCY = freq;                    /* Set RF channel                          */
+  NRF_RADIO->MODE = RADIO_MODE_MODE_Nrf_2Mbit;    /* Set data rate and modulation            */
   // NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Neg20dBm;
-  NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos4dBm;
+  NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos4dBm; /* Set TX power                        */
 
   NRF_RADIO->PCNF0 = (                            /* Packet configuration register 0         */
     (6 << RADIO_PCNF0_LFLEN_Pos)              |   /* 6 bits for LENGTH field                 */
@@ -130,19 +130,19 @@ void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
   NRF_RADIO->PREFIX0 = 0xE7;                      /* Prefixes bytes for logical addresses    */
   NRF_RADIO->RXADDRESSES = 0x01;                  /* Receive address select                  */
 
-  NRF_RADIO_SET_CRC(16);
-
-  NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Packet pointer                          */
+  NRF_RADIO_SET_CRC(16);                          /* Set 16 bit CRC mode                     */
+  
+  NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Set TX buffer pointer                   */
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
 
 void __STATIC_INLINE init_twi(uint8_t twi_addr) {
-  NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Enabled << TWI_ENABLE_ENABLE_Pos;
+  NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Enabled << TWI_ENABLE_ENABLE_Pos; /* Enable I2C       */
 
-  NRF_TWIx->ADDRESS = twi_addr;
-  NRF_TWIx->FREQUENCY = TWI_FREQUENCY_FREQUENCY_K400;
-  NRF_TWIx->PSELSDA = SDA_PIN;
-  NRF_TWIx->PSELSCL = SCL_PIN;
+  NRF_TWIx->ADDRESS = twi_addr;                   /* Set I2C slave device (sensor) address   */
+  NRF_TWIx->FREQUENCY = TWI_FREQUENCY_FREQUENCY_K400;  /* Set 400kHz I2C mode                */
+  NRF_TWIx->PSELSDA = SDA_PIN;                    /* Define SDA pin                          */
+  NRF_TWIx->PSELSCL = SCL_PIN;                    /* Define SCL pin                          */
 }
 
 void __STATIC_INLINE init_rtc(void) {
