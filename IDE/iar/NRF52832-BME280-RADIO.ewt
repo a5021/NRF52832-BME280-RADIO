@@ -1186,27 +1186,45 @@
         </settings>
     </configuration>
     <group>
-        <name>Application</name>
-        <file>
-            <name>$PROJ_DIR$\..\..\..\main.c</name>
-        </file>
-    </group>
-    <group>
         <name>SYS</name>
         <group>
             <name>CMSIS</name>
+            <file>
+                <name>$PROJ_DIR$\core\CMSIS\core_cm4.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\CMSIS\core_cmFunc.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\CMSIS\core_cmInstr.h</name>
+            </file>
         </group>
-        <file>
-            <name>$PROJ_DIR$\core\iar_startup_nrf52.s</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\core\nrf.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\core\nrf52.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\core\system_nrf52.c</name>
-        </file>
+        <group>
+            <name>inc</name>
+            <file>
+                <name>$PROJ_DIR$\core\compiler_abstraction.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\nrf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\nrf51_to_nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\nrf52_bitfields.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\nrf52_name_change.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\core\system_nrf52.h</name>
+            </file>
+        </group>
     </group>
+    <file>
+        <name>$PROJ_DIR$\..\..\main.c</name>
+    </file>
 </project>
