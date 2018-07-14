@@ -36,25 +36,25 @@
 // allowed values for `BITS' are: 0, 8, 16, 24
 #define NRF_RADIO_SET_CRC(BITS) NRF_RADIO->CRCCNF = BITS / 8; NRF_RADIO->CRCINIT = CRCINIT ## BITS; NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
 
-#define BME280_I2C_ADDR_PRIM	            0x76
+#define BME280_I2C_ADDR_PRIM	          0x76
 
 #define BME280_CHIP_ID                    0x60
 #define BME280_RESET_CMD                  0xB6
 
-#define	BME280_FORCED_MODE		            0x01
+#define	BME280_FORCED_MODE		  0x01
 
 #define BME280_FILTER_POS                 0x02
 #define BME280_SENSOR_MODE_POS	          0x00
-#define BME280_CTRL_HUM_POS		            0x00
-#define BME280_CTRL_PRESS_POS	            0x02
-#define BME280_CTRL_TEMP_POS	            0x05
+#define BME280_CTRL_HUM_POS		  0x00
+#define BME280_CTRL_PRESS_POS	          0x02
+#define BME280_CTRL_TEMP_POS	          0x05
 
-#define BME280_NO_OVERSAMPLING		        0x00
-#define BME280_OVERSAMPLING_1X		        0x01
-#define BME280_OVERSAMPLING_2X		        0x02
-#define BME280_OVERSAMPLING_4X		        0x03
-#define BME280_OVERSAMPLING_8X		        0x04
-#define BME280_OVERSAMPLING_16X		        0x05
+#define BME280_NO_OVERSAMPLING		  0x00
+#define BME280_OVERSAMPLING_1X		  0x01
+#define BME280_OVERSAMPLING_2X		  0x02
+#define BME280_OVERSAMPLING_4X		  0x03
+#define BME280_OVERSAMPLING_8X		  0x04
+#define BME280_OVERSAMPLING_16X		  0x05
 
 #define BME280_FILTER_COEFF_OFF           0x00
 #define BME280_FILTER_COEFF_2             0x01
@@ -396,17 +396,6 @@ int main(void) {
   bme280_calib_data_t c_data;
   uint8_t buf[TEMP_PRESS_CALIB_DATA_LEN];
 
-  // if (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0) {
-  //   /* Start low frequency crystal oscillator */
-  //   NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
-  //   // NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_RC << CLOCK_LFCLKSRC_SRC_Pos);
-  //   NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
-  //   NRF_CLOCK->TASKS_LFCLKSTART    = 1;
-  // 
-	// 	/* Wait for the external oscillator to start up */
-  //   while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
-  // }
-  
   while(
     ! bme280_read(CHIP_ID_REG, buf, ID_LEN)                                                ||
     ! (buf[0] == BME280_CHIP_ID)                                                           ||
@@ -441,36 +430,16 @@ int main(void) {
 
   NRF_RTC2->TASKS_START = 1;
   
-  //  static uint32_t a_st, b_st;
-
   while (1) {
  
     bme280_write(CTRL_MEAS_REG, (BME280_OVERSAMPLING_1X << BME280_CTRL_TEMP_POS) | (BME280_OVERSAMPLING_1X << BME280_CTRL_PRESS_POS) | BME280_FORCED_MODE);
 
     sleep();
-    // delay_us(5000);
-
-    // a_st = NRF_RTC2->COUNTER;
-    /* Start 32 MHz crystal oscillator */
-    // NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    // NRF_CLOCK->TASKS_HFCLKSTART    = 1;
-
-    
+	  
     NRF_RTC2->EVENTS_COMPARE[1] = 0;
     bme280_read(DATA_REG, buf, P_T_H_DATA_LEN);
     NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Disabled << TWI_ENABLE_ENABLE_Pos;
 
-    /* Wait for the external oscillator to start up */
-    // WAIT_FOR_EVENT(NRF_RTC2->EVENTS_COMPARE[2]);
-    // while ((NRF_CLOCK->HFCLKSTAT & CLOCK_HFCLKSTAT_SRC_Xtal) == 0);
-    // b_st = NRF_RTC2->COUNTER;
-    
-    // if (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0) {
-      /* Start 32 MHz crystal oscillator */
-    
-      /* Wait for the external oscillator to start up */
-    // }
-    
     payload_buf.t = compensate_temperature(TEMP_EXP(buf), &c_data);
     payload_buf.p = compensate_pressure(PRESS_EXP(buf), &c_data);
     payload_buf.h = compensate_humidity(HUM_EXP(buf),  &c_data);
@@ -483,7 +452,7 @@ int main(void) {
 #endif
     
     NRF_RADIO->EVENTS_END = 0;
-		NRF_RADIO->TASKS_START = 1;
+    NRF_RADIO->TASKS_START = 1;
     
     WAIT_FOR_EVENT(NRF_RADIO->EVENTS_END);
 
@@ -498,14 +467,9 @@ int main(void) {
     
     NRF_CLOCK->TASKS_HFCLKSTOP = 1;
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    // NRF_RADIO->TASKS_TXEN = 0;
-    // NRF_RADIO->TASKS_STOP = 1;
-    // NRF_RADIO->POWER = 0;
     
     sleep();
     
-    // delay_us(5000000);
-
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_HFCLKSTART    = 1;
     while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
