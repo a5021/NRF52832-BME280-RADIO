@@ -5,85 +5,85 @@
     <configuration>
         <name>nrf52832_xxaa</name>
         <outputs>
-            <file>$PROJ_DIR$\nrf52832_xxaa\List\NRF52832-BME280-RADIO.map</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.pbi</file>
-            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-            <file>$PROJ_DIR$\core\compiler_abstraction.h</file>
-            <file>$PROJ_DIR$\core\nrf52_name_change.h</file>
-            <file>$PROJ_DIR$\core\system_nrf52.h</file>
-            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-            <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
-            <file>$PROJ_DIR$\core\nrf52_bitfields.h</file>
-            <file>$PROJ_DIR$\..\..\main.c</file>
-            <file>$PROJ_DIR$\core\nrf52.h</file>
-            <file>$PROJ_DIR$\core\CMSIS\core_cmInstr.h</file>
-            <file>$PROJ_DIR$\core\CMSIS\core_cm4.h</file>
-            <file>$PROJ_DIR$\core\nrf.h</file>
             <file>$PROJ_DIR$\core\nrf51_to_nrf52.h</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
             <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
             <file>$PROJ_DIR$\nrf52832_xxaa\Obj\NRF52832-BME280-RADIO.pbd</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\List\NRF52832-BME280-RADIO.map</file>
             <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
             <file>$TOOLKIT_DIR$\inc\c\iccarm_builtin.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
             <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.o</file>
+            <file>$PROJ_DIR$\core\CMSIS\core_cm4.h</file>
+            <file>$PROJ_DIR$\core\system_nrf52.h</file>
+            <file>$PROJ_DIR$\core\nrf52_bitfields.h</file>
+            <file>$PROJ_DIR$\core\CMSIS\core_cmInstr.h</file>
             <file>$PROJ_DIR$\core\CMSIS\core_cmFunc.h</file>
-            <file>$TOOLKIT_DIR$\config\linker\NordicSemi\nrf52832_xxaa.icf</file>
-            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+            <file>$PROJ_DIR$\core\compiler_abstraction.h</file>
+            <file>$PROJ_DIR$\core\nrf52_name_change.h</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.pbi</file>
+            <file>$PROJ_DIR$\core\nrf.h</file>
+            <file>$PROJ_DIR$\..\..\main.c</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\core\nrf52.h</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
             <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.__cstat.et</file>
             <file>$PROJ_DIR$\nrf52832_xxaa\Exe\NRF52832-BME280-RADIO.out</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.__cstat.et</file>
             <file>$PROJ_DIR$\core\CMSIS\core_cmSimd.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+            <file>$TOOLKIT_DIR$\config\linker\NordicSemi\nrf52832_xxaa.icf</file>
         </outputs>
-        <file>
-            <name>$PROJ_DIR$\..\..\main.c</name>
-            <outputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 21</file>
-                </tool>
-                <tool>
-                    <name>__cstat</name>
-                    <file> 27</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 2</file>
-                </tool>
-            </outputs>
-            <inputs>
-                <tool>
-                    <name>ICCARM</name>
-                    <file> 15 12 14 24 3 19 1 25 26 13 9 20 22 29 6 10 16 5 4</file>
-                </tool>
-                <tool>
-                    <name>BICOMP</name>
-                    <file> 5 24 1 10 6 12 16 4 14 22 19 9 15 13 29 3 25 26 20</file>
-                </tool>
-            </inputs>
-        </file>
         <file>
             <name>[ROOT_NODE]</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 28 0</file>
+                    <file> 24 5</file>
                 </tool>
             </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\main.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 9</file>
+                </tool>
+                <tool>
+                    <name>__cstat</name>
+                    <file> 25</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 17</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCARM</name>
+                    <file> 18 21 10 27 8 6 20 23 28 13 2 7 14 26 11 12 0 16 15</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 12 27 11 20 16 21 0 15 10 14 6 2 18 13 26 8 23 28 7</file>
+                </tool>
+            </inputs>
         </file>
         <file>
             <name>$PROJ_DIR$\nrf52832_xxaa\Exe\NRF52832-BME280-RADIO.out</name>
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 0</file>
+                    <file> 5</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 23 21 8 17 7</file>
+                    <file> 29 9 22 3 1</file>
                 </tool>
             </inputs>
         </file>

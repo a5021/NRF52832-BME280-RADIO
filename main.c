@@ -6,6 +6,7 @@
 #include "nrf.h"
 
 #define NRF_FREQ_CHANNEL                  99
+#define TX_PERIOD                         25
 
 #define SDA_PIN                           26
 #define SCL_PIN                           27
@@ -147,7 +148,7 @@ void __STATIC_INLINE init_twi(uint8_t twi_addr) {
 
 void __STATIC_INLINE init_rtc(void) {
   NRF_RTC2->PRESCALER = 1;
-  NRF_RTC2->CC[0] = 16384 * 25;
+  NRF_RTC2->CC[0] = 16384 * TX_PERIOD;
   NRF_RTC2->CC[1] = 135;
   NRF_RTC2->INTENSET = RTC_INTENSET_COMPARE0_Msk | RTC_INTENSET_COMPARE1_Msk | RTC_INTENSET_COMPARE2_Msk;
   NRF_RTC2->EVENTS_COMPARE[1] =
