@@ -21,6 +21,7 @@
 *.sct
 *.uvgui.*
 *.uvguix.*
+*.scvd
 *.tmp
 **/arm/JLinkLog.txt
 **/_viminfo

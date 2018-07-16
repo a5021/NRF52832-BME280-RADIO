@@ -154,9 +154,9 @@ void __STATIC_INLINE init_rtc(void) {
   NRF_RTC2->CC[0] = 16384 * TX_PERIOD;            /* sleep period between data sendings      */
   NRF_RTC2->CC[1] = 135;                          /* short sleep while data converting       */
   NRF_RTC2->INTENSET = RTC_INTENSET_COMPARE0_Msk | RTC_INTENSET_COMPARE1_Msk;
-  NRF_RTC2->EVENTS_COMPARE[1] =
-  NRF_RTC2->EVENTS_COMPARE[0] = 0;
-  NVIC_SetPriority(RTC2_IRQn, 15);
+  NRF_RTC2->EVENTS_COMPARE[1] =                   /* reset compare 1 event flag              */
+  NRF_RTC2->EVENTS_COMPARE[0] = 0;                /* reset compare 0 event flag              */
+  // NVIC_SetPriority(RTC2_IRQn, 15);
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   // do not use NVIC_EnableIRQ(RTC2_IRQn); !!!
 }
