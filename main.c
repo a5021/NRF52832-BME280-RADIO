@@ -127,12 +127,15 @@ void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
     (32 << RADIO_PCNF1_MAXLEN_Pos)                /* Max payload size in bytes               */
   );
 
+        /***   Address consists of one byte PREFIX0 + n bytes BASE0  ***/
+        /***   where n is a value of BALEN field in PCNF1 register   ***/
+
   NRF_RADIO->BASE0 = 0xE7E7E7E7;                  /* Base address 0                          */
   NRF_RADIO->PREFIX0 = 0xE7;                      /* Prefixes bytes for logical addresses    */
   NRF_RADIO->RXADDRESSES = 0x01;                  /* Receive address select                  */
 
   NRF_RADIO_SET_CRC(16);                          /* Set 16 bit CRC mode                     */
-  
+
   NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Set TX buffer pointer                   */
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
@@ -147,10 +150,10 @@ void __STATIC_INLINE init_twi(uint8_t twi_addr) {
 }
 
 void __STATIC_INLINE init_rtc(void) {
-  NRF_RTC2->PRESCALER = 1;
-  NRF_RTC2->CC[0] = 16384 * TX_PERIOD;
-  NRF_RTC2->CC[1] = 135;
-  NRF_RTC2->INTENSET = RTC_INTENSET_COMPARE0_Msk | RTC_INTENSET_COMPARE1_Msk | RTC_INTENSET_COMPARE2_Msk;
+  NRF_RTC2->PRESCALER = 1;                        /* freq = 32768 / 2                        */
+  NRF_RTC2->CC[0] = 16384 * TX_PERIOD;            /* sleep period between data sendings      */
+  NRF_RTC2->CC[1] = 135;                          /* short sleep while data converting       */
+  NRF_RTC2->INTENSET = RTC_INTENSET_COMPARE0_Msk | RTC_INTENSET_COMPARE1_Msk;
   NRF_RTC2->EVENTS_COMPARE[1] =
   NRF_RTC2->EVENTS_COMPARE[0] = 0;
   NVIC_SetPriority(RTC2_IRQn, 15);
@@ -340,7 +343,7 @@ static __INLINE void init_clock(void) {
     /* Start 32 MHz crystal oscillator */
     NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
     NRF_CLOCK->TASKS_HFCLKSTART    = 1;
-  
+
     /* Wait for the external oscillator to start up */
     while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
   // }

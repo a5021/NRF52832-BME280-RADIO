@@ -5,35 +5,35 @@
     <configuration>
         <name>nrf52832_xxaa</name>
         <outputs>
-            <file>$PROJ_DIR$\core\CMSIS\core_cmFunc.h</file>
-            <file>$PROJ_DIR$\core\compiler_abstraction.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-            <file>$PROJ_DIR$\core\system_nrf52.h</file>
-            <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\List\NRF52832-BME280-RADIO.map</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\NRF52832-BME280-RADIO.pbd</file>
-            <file>$PROJ_DIR$\core\nrf.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\iccarm_builtin.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.pbi</file>
-            <file>$PROJ_DIR$\core\nrf52.h</file>
-            <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
-            <file>$PROJ_DIR$\core\CMSIS\core_cm4.h</file>
             <file>$PROJ_DIR$\core\CMSIS\core_cmInstr.h</file>
+            <file>$PROJ_DIR$\core\nrf.h</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\List\NRF52832-BME280-RADIO.map</file>
+            <file>$TOOLKIT_DIR$\inc\c\iccarm_builtin.h</file>
+            <file>$PROJ_DIR$\core\nrf52.h</file>
+            <file>$PROJ_DIR$\core\system_nrf52.h</file>
             <file>$PROJ_DIR$\core\nrf51_to_nrf52.h</file>
-            <file>$PROJ_DIR$\core\nrf52_name_change.h</file>
-            <file>$PROJ_DIR$\core\nrf52_bitfields.h</file>
-            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
             <file>$PROJ_DIR$\..\..\main.c</file>
+            <file>$PROJ_DIR$\core\compiler_abstraction.h</file>
+            <file>$PROJ_DIR$\core\CMSIS\core_cm4.h</file>
+            <file>$PROJ_DIR$\core\nrf52_bitfields.h</file>
+            <file>$PROJ_DIR$\core\nrf52_name_change.h</file>
+            <file>$TOOLKIT_DIR$\lib\m7M_tls.a</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\NRF52832-BME280-RADIO.pbd</file>
+            <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+            <file>$PROJ_DIR$\core\CMSIS\core_cmFunc.h</file>
+            <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.pbi</file>
             <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.o</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Exe\NRF52832-BME280-RADIO.out</file>
+            <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
             <file>$PROJ_DIR$\core\CMSIS\core_cmSimd.h</file>
             <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.__cstat.et</file>
-            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Exe\NRF52832-BME280-RADIO.out</file>
             <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
             <file>$TOOLKIT_DIR$\config\linker\NordicSemi\nrf52832_xxaa.icf</file>
+            <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
+            <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+            <file>$PROJ_DIR$\nrf52832_xxaa\Obj\main.__cstat.et</file>
+            <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
             <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
         </outputs>
         <file>
@@ -41,25 +41,25 @@
             <outputs>
                 <tool>
                     <name>__cstat</name>
-                    <file> 25</file>
+                    <file> 27</file>
                 </tool>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 21</file>
+                    <file> 18</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 10</file>
+                    <file> 17</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ICCARM</name>
-                    <file> 7 11 13 27 9 19 2 24 29 14 12 8 0 23 3 17 15 16 1</file>
+                    <file> 1 4 9 23 14 19 16 21 29 0 25 3 15 20 5 10 6 11 8</file>
                 </tool>
                 <tool>
                     <name>BICOMP</name>
-                    <file> 17 27 3 2 16 11 15 1 13 0 19 12 7 14 23 9 24 29 8</file>
+                    <file> 4 23 8 9 16 6 10 11 5 15 19 25 1 0 20 14 21 29 3</file>
                 </tool>
             </inputs>
         </file>
@@ -68,7 +68,7 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 22 5</file>
+                    <file> 22 2</file>
                 </tool>
             </outputs>
         </file>
@@ -77,13 +77,13 @@
             <outputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 5</file>
+                    <file> 2</file>
                 </tool>
             </outputs>
             <inputs>
                 <tool>
                     <name>ILINK</name>
-                    <file> 28 21 26 4 18</file>
+                    <file> 24 18 28 12 26</file>
                 </tool>
             </inputs>
         </file>

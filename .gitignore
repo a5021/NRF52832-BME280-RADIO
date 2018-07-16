@@ -27,4 +27,5 @@
 **/_vimtags
 IDE/armcc/_build/
 IDE/armcc/RTE/
+IDE/iar/nrf52832_xxaa/
 settings/
