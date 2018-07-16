@@ -335,16 +335,17 @@ void __STATIC_INLINE sleep(void) {
 }
 
 static __INLINE void init_clock(void) {
-  //if (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0) {
-  //  /* Start 32 MHz crystal oscillator */
-  //  NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-  //  NRF_CLOCK->TASKS_HFCLKSTART    = 1;
-  //
-  //  /* Wait for the external oscillator to start up */
-  //  while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
-  //}
 
-  if (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0) {
+  // if (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0) {
+    /* Start 32 MHz crystal oscillator */
+    NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+    NRF_CLOCK->TASKS_HFCLKSTART    = 1;
+  
+    /* Wait for the external oscillator to start up */
+    while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
+  // }
+
+  // if (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0) {
     /* Start low frequency crystal oscillator */
     NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
     NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
@@ -352,7 +353,8 @@ static __INLINE void init_clock(void) {
 
       /* Wait for the external oscillator to start up */
     while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
-  }
+  // }
+
 }
 
 
