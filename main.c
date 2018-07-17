@@ -113,7 +113,6 @@ void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
 
   NRF_RADIO->FREQUENCY = freq;                    /* Set RF channel                          */
   NRF_RADIO->MODE = RADIO_MODE_MODE_Nrf_2Mbit;    /* Set data rate and modulation            */
-  // NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Neg20dBm;
   NRF_RADIO->TXPOWER = RADIO_TXPOWER_TXPOWER_Pos4dBm; /* Set TX power                        */
 
   NRF_RADIO->PCNF0 = (                            /* Packet configuration register 0         */
@@ -376,6 +375,54 @@ static __INLINE void init_clock(void) {
 // 	NRF_TIMER2->EVENTS_COMPARE[0] = 0;
 // }
 
+__STATIC_INLINE void init_adc(void) {
+  NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_12bit;
+  
+  NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD;
+  NRF_SAADC->CH[0].CONFIG = (
+    SAADC_CH_CONFIG_TACQ_15us << SAADC_CH_CONFIG_TACQ_Pos     |
+    SAADC_CH_CONFIG_BURST_Enabled << SAADC_CH_CONFIG_BURST_Pos 
+  );
+
+  NRF_SAADC->OVERSAMPLE = SAADC_OVERSAMPLE_OVERSAMPLE_Over64x;
+
+  NRF_SAADC->RESULT.MAXCNT = 1;
+  
+  NRF_SAADC->SAMPLERATE = SAADC_SAMPLERATE_MODE_Task << SAADC_SAMPLERATE_MODE_Pos;
+
+  NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Enabled << SAADC_ENABLE_ENABLE_Pos;
+
+  NRF_SAADC->TASKS_CALIBRATEOFFSET = 1;  /* Start calibration */
+  while (NRF_SAADC->EVENTS_CALIBRATEDONE == 0);
+  NRF_SAADC->EVENTS_CALIBRATEDONE = 0;
+  while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));   
+  
+}
+
+__STATIC_INLINE uint32_t measure_vdd(void) {
+
+  volatile uint16_t res;
+  
+  NRF_SAADC->RESULT.PTR = (uint32_t) &res;
+  
+  NRF_SAADC->EVENTS_DONE = 0;
+
+  NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Enabled << SAADC_ENABLE_ENABLE_Pos;
+  
+  NRF_SAADC->TASKS_START = 1;              // Start the SAADC
+  while (NRF_SAADC->EVENTS_STARTED == 0);  // Wait for STARTED event
+  NRF_SAADC->EVENTS_STARTED = 0;           // Reset event flag
+   
+  NRF_SAADC->TASKS_SAMPLE = 1;
+  while (NRF_SAADC->EVENTS_END == 0);
+  NRF_SAADC->EVENTS_END = 0;
+
+  // Disable SAADC 
+  NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Disabled << SAADC_ENABLE_ENABLE_Pos;
+   
+  return res * 3600 / 4095;
+}
+
 int main(void) {
 
   struct {
@@ -384,9 +431,12 @@ int main(void) {
     uint32_t p;
     int32_t  t;
     uint32_t h;
-  } __attribute__((packed)) payload_buf = {.l = 12, .i = 6};
+    uint16_t v;
+  } __attribute__((packed)) payload_buf = {.l = 14, .i = 6};
 
   init_clock();
+  init_adc();
+  
   init_twi(BME280_I2C_ADDR_PRIM);
   init_rtc();
   // init_timer();
@@ -451,6 +501,8 @@ int main(void) {
     payload_buf.h = compensate_humidity(HUM_EXP(buf),  &c_data);
     payload_buf.i = ((((payload_buf.i >> 1) + 1) << 1) & 0x06) | 1;
 
+    payload_buf.v = measure_vdd();
+    
 #ifdef USE_UART
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
     NRF_UART0->TASKS_STARTTX = 1;
