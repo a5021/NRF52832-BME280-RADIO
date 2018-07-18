@@ -6,7 +6,7 @@
 #include "nrf.h"
 
 #define NRF_FREQ_CHANNEL                  99
-#define TX_PERIOD                         25
+#define TX_PERIOD                         60
 
 #define SDA_PIN                           26
 #define SCL_PIN                           27
@@ -377,17 +377,17 @@ static __INLINE void init_clock(void) {
 
 __STATIC_INLINE void init_adc(void) {
   NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_12bit;
-  
+
   NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD;
   NRF_SAADC->CH[0].CONFIG = (
     SAADC_CH_CONFIG_TACQ_15us << SAADC_CH_CONFIG_TACQ_Pos     |
-    SAADC_CH_CONFIG_BURST_Enabled << SAADC_CH_CONFIG_BURST_Pos 
+    SAADC_CH_CONFIG_BURST_Enabled << SAADC_CH_CONFIG_BURST_Pos
   );
 
   NRF_SAADC->OVERSAMPLE = SAADC_OVERSAMPLE_OVERSAMPLE_Over64x;
 
   NRF_SAADC->RESULT.MAXCNT = 1;
-  
+
   NRF_SAADC->SAMPLERATE = SAADC_SAMPLERATE_MODE_Task << SAADC_SAMPLERATE_MODE_Pos;
 
   NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Enabled << SAADC_ENABLE_ENABLE_Pos;
@@ -395,48 +395,54 @@ __STATIC_INLINE void init_adc(void) {
   NRF_SAADC->TASKS_CALIBRATEOFFSET = 1;  /* Start calibration */
   while (NRF_SAADC->EVENTS_CALIBRATEDONE == 0);
   NRF_SAADC->EVENTS_CALIBRATEDONE = 0;
-  while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));   
-  
+  while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));
+
 }
 
 __STATIC_INLINE uint32_t measure_vdd(void) {
 
   volatile uint16_t res;
-  
+
   NRF_SAADC->RESULT.PTR = (uint32_t) &res;
-  
+
   NRF_SAADC->EVENTS_DONE = 0;
 
   NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Enabled << SAADC_ENABLE_ENABLE_Pos;
-  
+
   NRF_SAADC->TASKS_START = 1;              // Start the SAADC
   while (NRF_SAADC->EVENTS_STARTED == 0);  // Wait for STARTED event
   NRF_SAADC->EVENTS_STARTED = 0;           // Reset event flag
-   
+
   NRF_SAADC->TASKS_SAMPLE = 1;
   while (NRF_SAADC->EVENTS_END == 0);
   NRF_SAADC->EVENTS_END = 0;
 
-  // Disable SAADC 
+  // Disable SAADC
   NRF_SAADC->ENABLE = SAADC_ENABLE_ENABLE_Disabled << SAADC_ENABLE_ENABLE_Pos;
-   
+
   return res * 3600 / 4095;
 }
+
+
+#define MASK_SIGN           (0x00000200UL)
+#define MASK_SIGN_EXTENSION (0xFFFFFC00UL)
+#define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
 
 int main(void) {
 
   struct {
     uint8_t  l;
     uint8_t  i;
-    uint32_t p;
-    int32_t  t;
-    uint32_t h;
-    uint16_t v;
-  } __attribute__((packed)) payload_buf = {.l = 14, .i = 6};
+    uint32_t p : 24;
+    int8_t   t0: 8;
+    int32_t  t : 16;
+    uint32_t h : 16;
+    uint16_t v : 16;
+  } __attribute__((packed)) payload_buf = {.l = 10, .i = 6};
 
   init_clock();
   init_adc();
-  
+
   init_twi(BME280_I2C_ADDR_PRIM);
   init_rtc();
   // init_timer();
@@ -486,6 +492,9 @@ int main(void) {
 
   NRF_RTC2->TASKS_START = 1;
 
+  /* Workaround for PAN_028 rev2.0A anomaly 31 - TEMP: Temperature offset value has to be manually loaded to the TEMP module */
+  *(uint32_t *) 0x4000C504 = 0;
+
   while (1) {
 
     bme280_write(CTRL_MEAS_REG, (BME280_OVERSAMPLING_1X << BME280_CTRL_TEMP_POS) | (BME280_OVERSAMPLING_1X << BME280_CTRL_PRESS_POS) | BME280_FORCED_MODE);
@@ -496,13 +505,25 @@ int main(void) {
     bme280_read(DATA_REG, buf, P_T_H_DATA_LEN);
     NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Disabled << TWI_ENABLE_ENABLE_Pos;
 
+    NRF_TEMP->TASKS_START = 1; /** Start the temperature measurement. */
+    
+    /* Busy wait while temperature measurement is not finished*/
+    while (NRF_TEMP->EVENTS_DATARDY == 0);
+    NRF_TEMP->EVENTS_DATARDY = 0;
+    
+    /**@note Workaround for PAN_028 rev2.0A anomaly 29 - TEMP: Stop task clears the TEMP register. */
+    payload_buf.t0 = READ_TEMP() / 4;
+    
+    /**@note Workaround for PAN_028 rev2.0A anomaly 30 - TEMP: Temp module analog front end does not power down when DATARDY event occurs. */
+    NRF_TEMP->TASKS_STOP = 1; /** Stop the temperature measurement. */
+    
     payload_buf.t = compensate_temperature(TEMP_EXP(buf), &c_data);
     payload_buf.p = compensate_pressure(PRESS_EXP(buf), &c_data);
     payload_buf.h = compensate_humidity(HUM_EXP(buf),  &c_data);
     payload_buf.i = ((((payload_buf.i >> 1) + 1) << 1) & 0x06) | 1;
 
     payload_buf.v = measure_vdd();
-    
+
 #ifdef USE_UART
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
     NRF_UART0->TASKS_STARTTX = 1;
