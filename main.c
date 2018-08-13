@@ -11,7 +11,9 @@
 #define SDA_PIN                           26
 #define SCL_PIN                           27
 
-#define UART_TX_PIN                       6
+#ifdef USE_UART
+  #define UART_TX_PIN                     6
+#endif
 
 #define NRF_TWIMx                         NRF_TWIM1
 #define NRF_TWIx                          NRF_TWI1
