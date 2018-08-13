@@ -44,7 +44,7 @@
 #define BME280_CHIP_ID                    0x60
 #define BME280_RESET_CMD                  0xB6
 
-#define	BME280_FORCED_MODE                0x01
+#define BME280_FORCED_MODE                0x01
 
 #define BME280_FILTER_POS                 0x02
 #define BME280_SENSOR_MODE_POS	          0x00
