@@ -47,7 +47,7 @@
 #define BME280_FORCED_MODE                0x01
 
 #define BME280_FILTER_POS                 0x02
-#define BME280_SENSOR_MODE_POS	          0x00
+#define BME280_SENSOR_MODE_POS            0x00
 #define BME280_CTRL_HUM_POS               0x00
 #define BME280_CTRL_PRESS_POS             0x02
 #define BME280_CTRL_TEMP_POS              0x05
