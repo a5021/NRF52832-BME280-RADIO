@@ -1,19 +1,17 @@
 /*********  Copyright (c) 2018, a5021 *****************************************/
 
+#include "nrf.h"
+
 #ifdef USE_UART
   #include <stdio.h>
+  #define UART_TX_PIN                     6
 #endif
-#include "nrf.h"
 
 #define NRF_FREQ_CHANNEL                  99
 #define TX_PERIOD                         60 
 
 #define SDA_PIN                           26
 #define SCL_PIN                           27
-
-#ifdef USE_UART
-  #define UART_TX_PIN                     6
-#endif
 
 #define NRF_TWIMx                         NRF_TWIM1
 #define NRF_TWIx                          NRF_TWI1
@@ -157,7 +155,6 @@ void __STATIC_INLINE init_rtc(void) {
   NRF_RTC2->INTENSET = RTC_INTENSET_COMPARE0_Msk | RTC_INTENSET_COMPARE1_Msk;
   NRF_RTC2->EVENTS_COMPARE[1] =                   /* reset compare 1 event flag              */
   NRF_RTC2->EVENTS_COMPARE[0] = 0;                /* reset compare 0 event flag              */
-  // NVIC_SetPriority(RTC2_IRQn, 15);
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   // do not use NVIC_EnableIRQ(RTC2_IRQn); !!!
 }
@@ -333,51 +330,27 @@ uint32_t __STATIC_INLINE compensate_humidity(uint32_t u_hum,  bme280_calib_data_
 void __STATIC_INLINE sleep(void) {
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   NRF_POWER->TASKS_LOWPWR = 1;
-  // __SEV();
-  // __WFE();
   __WFE();
 }
 
-static __INLINE void init_clock(void) {
+void __STATIC_INLINE init_clock(void) {
+  /* Start 32 MHz crystal oscillator */
+  NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
+  NRF_CLOCK->TASKS_HFCLKSTART    = 1;
 
-  // if (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0) {
-    /* Start 32 MHz crystal oscillator */
-    NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
-    NRF_CLOCK->TASKS_HFCLKSTART    = 1;
+  /* Wait for the external oscillator to start up */
+  while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
 
-    /* Wait for the external oscillator to start up */
-    while (NRF_CLOCK->EVENTS_HFCLKSTARTED == 0);
-  // }
+  /* Start low frequency crystal oscillator */
+  NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
+  NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+  NRF_CLOCK->TASKS_LFCLKSTART    = 1;
 
-  // if (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0) {
-    /* Start low frequency crystal oscillator */
-    NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
-    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
-    NRF_CLOCK->TASKS_LFCLKSTART    = 1;
-
-      /* Wait for the external oscillator to start up */
-    while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
-  // }
-
+  /* Wait for the external oscillator to start up */
+  while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
 }
 
-
-// __STATIC_INLINE void init_timer(void) {
-// 	NRF_TIMER2->BITMODE = TIMER_BITMODE_BITMODE_32Bit;
-// 	NRF_TIMER2->SHORTS = (
-// 	  (TIMER_SHORTS_COMPARE0_STOP_Enabled << TIMER_SHORTS_COMPARE0_STOP_Pos) |
-// 	  (TIMER_SHORTS_COMPARE0_CLEAR_Enabled << TIMER_SHORTS_COMPARE0_CLEAR_Pos)
-// 	);
-// };
-//
-// __STATIC_INLINE void delay_us(uint32_t us) {
-//   NRF_TIMER2->CC[0] = us;
-// 	NRF_TIMER2->TASKS_START = 1;
-// 	while(NRF_TIMER2->EVENTS_COMPARE[0] == 0);
-// 	NRF_TIMER2->EVENTS_COMPARE[0] = 0;
-// }
-
-__STATIC_INLINE void init_adc(void) {
+void __STATIC_INLINE init_adc(void) {
   NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_12bit;
 
   NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD;
@@ -401,7 +374,7 @@ __STATIC_INLINE void init_adc(void) {
 
 }
 
-__STATIC_INLINE uint32_t measure_vdd(void) {
+uint32_t __STATIC_INLINE measure_vdd(void) {
 
   volatile uint16_t res;
 
@@ -425,7 +398,6 @@ __STATIC_INLINE uint32_t measure_vdd(void) {
   return res * 3600 / 4095;
 }
 
-
 #define MASK_SIGN           (0x00000200UL)
 #define MASK_SIGN_EXTENSION (0xFFFFFC00UL)
 #define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
@@ -444,10 +416,8 @@ int main(void) {
 
   init_clock();
   init_adc();
-
   init_twi(BME280_I2C_ADDR_PRIM);
   init_rtc();
-  // init_timer();
 
 #ifdef USE_UART
   init_uart();
