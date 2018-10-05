@@ -1185,6 +1185,60 @@
             </data>
         </settings>
     </configuration>
+    <group>
+        <name>core</name>
+        <group>
+            <name>inc</name>
+            <group>
+                <name>CMSIS</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\cmsis_gcc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cm4.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmFunc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmInstr.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmSimd.h</name>
+                </file>
+            </group>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\compiler_abstraction.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf51_to_nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52_bitfields.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52_name_change.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\system_nrf52.h</name>
+            </file>
+        </group>
+        <group>
+            <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\src\iar_startup_nrf52.s</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\src\system_nrf52.c</name>
+            </file>
+        </group>
+    </group>
     <file>
         <name>$PROJ_DIR$\..\..\main.c</name>
     </file>

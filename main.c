@@ -109,7 +109,7 @@ typedef struct {
 
 static unsigned char i2c_status;
 
-void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
+__STATIC_INLINE void init_radio(uint8_t freq, uint8_t *payload) {
 
   NRF_RADIO->FREQUENCY = freq;                    /* Set RF channel                          */
   NRF_RADIO->MODE = RADIO_MODE_MODE_Nrf_2Mbit;    /* Set data rate and modulation            */
@@ -139,7 +139,7 @@ void __STATIC_INLINE init_radio(uint8_t freq, uint8_t *payload) {
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
 
-void __STATIC_INLINE init_twi(uint8_t twi_addr) {
+__STATIC_INLINE void init_twi(uint8_t twi_addr) {
   NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Enabled << TWI_ENABLE_ENABLE_Pos; /* Enable I2C       */
 
   NRF_TWIx->ADDRESS = twi_addr;                   /* Set I2C slave device (sensor) address   */
@@ -148,7 +148,7 @@ void __STATIC_INLINE init_twi(uint8_t twi_addr) {
   NRF_TWIx->PSELSCL = SCL_PIN;                    /* Define SCL pin                          */
 }
 
-void __STATIC_INLINE init_rtc(void) {
+__STATIC_INLINE void init_rtc(void) {
   NRF_RTC2->PRESCALER = 1;                        /* freq = 32768 / 2                        */
   NRF_RTC2->CC[0] = 16384 * TX_PERIOD;            /* sleep period between data sendings      */
   NRF_RTC2->CC[1] = 135;                          /* short sleep while data converting       */
@@ -194,7 +194,7 @@ void __STATIC_INLINE init_rtc(void) {
   NRF_TWIx->TASKS_##T = 1;                            \
   TWI_WAIT(NRF_TWIx->EVENTS_##E)
 
-uint8_t __STATIC_INLINE twi_read(uint8_t r, uint8_t *d, uint8_t len) {
+__STATIC_INLINE uint8_t twi_read(uint8_t r, uint8_t *d, uint8_t len) {
 
   NRF_TWIx->EVENTS_TXDSENT  =
   NRF_TWIx->EVENTS_RXDREADY = 0;
@@ -228,7 +228,7 @@ uint8_t __STATIC_INLINE twi_read(uint8_t r, uint8_t *d, uint8_t len) {
   return TWI_OK;
 }
 
-uint8_t __STATIC_INLINE twi_write(uint8_t r, uint8_t d) {
+__STATIC_INLINE uint8_t twi_write(uint8_t r, uint8_t d) {
 
   NRF_TWIx->TXD = r;
   NRF_TWIx->EVENTS_TXDSENT  = 0;
@@ -241,15 +241,15 @@ uint8_t __STATIC_INLINE twi_write(uint8_t r, uint8_t d) {
   return TWI_OK;
 }
 
-uint8_t __STATIC_INLINE bme280_read(const bme280_reg_addr_t r, uint8_t* d, bme280_len_t len) {
+__STATIC_INLINE uint8_t bme280_read(const bme280_reg_addr_t r, uint8_t* d, bme280_len_t len) {
   return twi_read(r, d, len);
 }
 
-uint8_t __STATIC_INLINE bme280_write(const bme280_reg_addr_t r, uint8_t d) {
+__STATIC_INLINE uint8_t bme280_write(const bme280_reg_addr_t r, uint8_t d) {
   return twi_write(r, d);
 }
 
-int32_t __STATIC_INLINE compensate_temperature(uint32_t u_temp, bme280_calib_data_t *c) {
+__STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_data_t *c) {
   int32_t var1, var2, temperature;
   int32_t temperature_min = -4000;
   int32_t temperature_max = 8500;
@@ -269,7 +269,7 @@ int32_t __STATIC_INLINE compensate_temperature(uint32_t u_temp, bme280_calib_dat
   return temperature;
 }
 
-uint32_t __STATIC_INLINE compensate_pressure(uint32_t u_press, bme280_calib_data_t *c) {
+__STATIC_INLINE uint32_t compensate_pressure(uint32_t u_press, bme280_calib_data_t *c) {
   int64_t var1, var2, var3, var4;
   uint32_t pressure;
   uint32_t pressure_min = 3000000;
@@ -302,7 +302,7 @@ uint32_t __STATIC_INLINE compensate_pressure(uint32_t u_press, bme280_calib_data
   return pressure;
 }
 
-uint32_t __STATIC_INLINE compensate_humidity(uint32_t u_hum,  bme280_calib_data_t *c) {
+__STATIC_INLINE uint32_t compensate_humidity(uint32_t u_hum,  bme280_calib_data_t *c) {
   int32_t var1, var2, var3, var4, var5;
 
   var1 = c->t_fine - ((int32_t)76800);
@@ -327,13 +327,13 @@ uint32_t __STATIC_INLINE compensate_humidity(uint32_t u_hum,  bme280_calib_data_
   return humidity;
 }
 
-void __STATIC_INLINE sleep(void) {
+__STATIC_INLINE void sleep(void) {
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   NRF_POWER->TASKS_LOWPWR = 1;
   __WFE();
 }
 
-void __STATIC_INLINE init_clock(void) {
+__STATIC_INLINE void init_clock(void) {
   /* Start 32 MHz crystal oscillator */
   NRF_CLOCK->EVENTS_HFCLKSTARTED = 0;
   NRF_CLOCK->TASKS_HFCLKSTART    = 1;
@@ -350,7 +350,7 @@ void __STATIC_INLINE init_clock(void) {
   while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
 }
 
-void __STATIC_INLINE init_adc(void) {
+__STATIC_INLINE void init_adc(void) {
   NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_12bit;
 
   NRF_SAADC->CH[0].PSELP = SAADC_CH_PSELP_PSELP_VDD;
@@ -374,7 +374,7 @@ void __STATIC_INLINE init_adc(void) {
 
 }
 
-uint32_t __STATIC_INLINE measure_vdd(void) {
+__STATIC_INLINE uint32_t measure_vdd(void) {
 
   volatile uint16_t res;
 

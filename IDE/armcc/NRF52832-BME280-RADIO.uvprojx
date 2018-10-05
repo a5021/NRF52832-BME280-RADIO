@@ -195,7 +195,7 @@
             <RoSelD>3</RoSelD>
             <RwSelD>3</RwSelD>
             <CodeSel>0</CodeSel>
-            <OptFeed>0</OptFeed>
+            <OptFeed>1</OptFeed>
             <NoZi1>0</NoZi1>
             <NoZi2>0</NoZi2>
             <NoZi3>0</NoZi3>
@@ -312,8 +312,8 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
-            <oTime>1</oTime>
+            <Optim>1</Optim>
+            <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
             <Strict>0</Strict>
@@ -335,7 +335,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>FLOAT_ABI_HARD NRF52 NRF52832_XXAA __HEAP_SIZE=2048 __STACK_SIZE=2048</Define>
+              <Define>FLOAT_ABI_HARD CONFIG_GPIO_AS_PINRESET NRF52 NRF52832_XXAA __HEAP_SIZE=2048 __STACK_SIZE=2048</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..</IncludePath>
             </VariousControls>

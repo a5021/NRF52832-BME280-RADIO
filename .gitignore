@@ -15,7 +15,8 @@
 *.lst
 *.lnp
 *.bak
-
+*.zip
+*.log
 *.ini
 *.iex
 *.sct
@@ -23,10 +24,16 @@
 *.uvguix.*
 *.scvd
 *.tmp
+*.emSess*
+*.jdebu*
 **/arm/JLinkLog.txt
 **/_viminfo
 **/_vimtags
+**/_build/
+JLinkLog.txt
 IDE/armcc/_build/
+IDE/armgcc/_build/
 IDE/armcc/RTE/
 IDE/iar/nrf52832_xxaa/
+IDE/ses/nrf52832_xxaa/
 settings/

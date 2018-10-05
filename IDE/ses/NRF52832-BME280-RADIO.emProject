@@ -1,0 +1,68 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="NRF52832-BME280-RADIO" target="8" version="2">
+  <project Name="NRF52832-BME280-RADIO">
+    <configuration
+      Name="Common"
+      arm_architecture="v7EM"
+      arm_core_type="Cortex-M4"
+      arm_endian="Little"
+      arm_fp_abi="Hard"
+      arm_fpu_type="FPv4-SP-D16"
+      arm_linker_variant="SEGGER"
+      arm_simulator_memory_simulation_parameter="RX 00000000,00080000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
+      arm_target_device_name="nRF52832_xxAA"
+      arm_target_interface_type="SWD"
+      debug_start_from_entry_point_symbol="No"
+      debug_target_connection="J-Link"
+      link_linker_script_file="$(StudioDir)/samples/SEGGER_Flash.icf"
+      linker_section_placements_segments="FLASH RX 0x00000000 0x00080000;SRAM RWX 0x20000000 0x00010000"
+      project_directory="."
+      project_type="Executable" />
+    <folder Name="Internal Files">
+      <file file_name="$(StudioDir)/samples/Cortex_M_Startup.s" />
+      <file file_name="$(StudioDir)/samples/SEGGER_THUMB_Startup.s" />
+    </folder>
+    <configuration
+      Name="nrf52832_xxaa"
+      arm_assembler_variant="gcc"
+      arm_compiler_variant="gcc"
+      arm_keep_assembly="Yes"
+      arm_keep_preprocessor_output="Yes"
+      build_intermediate_directory="nrf52832_xxaa/Obj"
+      build_output_directory="nrf52832_xxaa/Exe"
+      c_preprocessor_definitions="NRF52832_XXAA;NDEBUG"
+      c_user_include_directories="../../core/inc;../../core/inc/CMSIS"
+      gcc_c_language_standard="gnu11"
+      gcc_cplusplus_language_standard="gnu++1z"
+      linker_output_format="hex" />
+    <folder Name="Source Files">
+      <file file_name="../../main.c" />
+    </folder>
+    <folder Name="core">
+      <folder Name="inc">
+        <folder Name="CMSIS">
+          <file file_name="../../core/inc/CMSIS/cmsis_gcc.h" />
+          <file file_name="../../core/inc/CMSIS/core_cm4.h" />
+          <file file_name="../../core/inc/CMSIS/core_cmFunc.h" />
+          <file file_name="../../core/inc/CMSIS/core_cmInstr.h" />
+          <file file_name="../../core/inc/CMSIS/core_cmSimd.h" />
+        </folder>
+        <file file_name="../../core/inc/compiler_abstraction.h" />
+        <file file_name="../../core/inc/nrf.h" />
+        <file file_name="../../core/inc/nrf51_to_nrf52.h" />
+        <file file_name="../../core/inc/nrf52.h" />
+        <file file_name="../../core/inc/nrf52_bitfields.h" />
+        <file file_name="../../core/inc/nrf52_name_change.h" />
+        <file file_name="../../core/inc/system_nrf52.h" />
+      </folder>
+      <folder Name="src">
+        <file file_name="../../core/src/system_nrf52.c" />
+      </folder>
+    </folder>
+  </project>
+  <configuration Name="Internal" hidden="Yes" />
+  <configuration
+    Name="nrf52832_xxaa"
+    arm_supply_absolute_file_path="No"
+    inherited_configurations="Internal" />
+</solution>

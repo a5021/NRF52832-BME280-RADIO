@@ -11,7 +11,7 @@
             <name>General</name>
             <archiveVersion>3</archiveVersion>
             <data>
-                <version>30</version>
+                <version>31</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -62,11 +62,11 @@
                 </option>
                 <option>
                     <name>OGProductVersion</name>
-                    <state>8.22.1.15696</state>
+                    <state>8.30.2.18207</state>
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.22.1.15696</state>
+                    <state>8.30.2.18207</state>
                 </option>
                 <option>
                     <name>GeneralEnableMisra</name>
@@ -112,7 +112,7 @@
                 </option>
                 <option>
                     <name>RTConfigPath2</name>
-                    <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
+                    <state>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</state>
                 </option>
                 <option>
                     <name>GBECoreSlave</name>
@@ -204,6 +204,11 @@
                     <name>TrustZone</name>
                     <state>0</state>
                 </option>
+                <option>
+                    <name>TrustZoneModes</name>
+                    <version>0</version>
+                    <state>0</state>
+                </option>
             </data>
         </settings>
         <settings>
@@ -216,6 +221,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>NRF52832_XXAA</state>
+                    <state>NDEBUG</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -231,23 +237,23 @@
                 </option>
                 <option>
                     <name>CCListCFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMnemonics</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListCMessages</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCListAssSource</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>CCEnableRemarks</name>
@@ -276,7 +282,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>1</version>
-                    <state>00000000</state>
+                    <state>11111110</state>
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
@@ -316,7 +322,7 @@
                 </option>
                 <option>
                     <name>CCCompilerRuntimeInfo</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IFpuProcessor</name>
@@ -340,8 +346,8 @@
                 </option>
                 <option>
                     <name>CCIncludePath2</name>
-                    <state>$PROJ_DIR$\core</state>
-                    <state>$PROJ_DIR$\core\CMSIS</state>
+                    <state>$PROJ_DIR$\..\..\core\inc</state>
+                    <state>$PROJ_DIR$\..\..\core\inc\CMSIS</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -357,7 +363,7 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptStrategy</name>
@@ -366,7 +372,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CompilerMisraRules98</name>
@@ -400,7 +406,7 @@
                 </option>
                 <option>
                     <name>IccAllowVLA</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IccStaticDestr</name>
@@ -408,7 +414,7 @@
                 </option>
                 <option>
                     <name>IccCppInlineSemantics</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IccCmsis</name>
@@ -591,7 +597,7 @@
                 </option>
                 <option>
                     <name>AOutputFile</name>
-                    <state></state>
+                    <state>$FILE_BNAME$.o</state>
                 </option>
                 <option>
                     <name>ALimitErrorsCheck</name>
@@ -633,7 +639,7 @@
                 <option>
                     <name>OOCOutputFormat</name>
                     <version>3</version>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OCOutputOverride</name>
@@ -641,7 +647,7 @@
                 </option>
                 <option>
                     <name>OOCOutputFile</name>
-                    <state></state>
+                    <state>NRF52832-BME280-RADIO.hex</state>
                 </option>
                 <option>
                     <name>OOCCommandLineProducer</name>
@@ -649,7 +655,7 @@
                 </option>
                 <option>
                     <name>OOCObjCopyEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
             </data>
         </settings>
@@ -679,7 +685,7 @@
             <name>ILINK</name>
             <archiveVersion>0</archiveVersion>
             <data>
-                <version>20</version>
+                <version>21</version>
                 <wantNonLocal>1</wantNonLocal>
                 <debug>0</debug>
                 <option>
@@ -736,23 +742,23 @@
                 </option>
                 <option>
                     <name>IlinkLogFile</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogInitialization</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogModule</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogSection</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogVeneer</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkIcfOverride</name>
@@ -760,7 +766,7 @@
                 </option>
                 <option>
                     <name>IlinkIcfFile</name>
-                    <state>lnk0t.icf</state>
+                    <state>$TOOLKIT_DIR$\config\linker\NordicSemi\nrf52832_xxaa.icf</state>
                 </option>
                 <option>
                     <name>IlinkIcfFileSlave</name>
@@ -820,7 +826,7 @@
                 </option>
                 <option>
                     <name>IlinkProgramEntryLabel</name>
-                    <state></state>
+                    <state>__iar_program_start</state>
                 </option>
                 <option>
                     <name>DoFill</name>
@@ -891,15 +897,15 @@
                 </option>
                 <option>
                     <name>IlinkLogAutoLibSelect</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogRedirSymbols</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkLogUnusedFragments</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkCrcReverseByteOrder</name>
@@ -927,7 +933,7 @@
                 </option>
                 <option>
                     <name>IlinkOptMergeDuplSections</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkOptUseVfe</name>
@@ -965,7 +971,7 @@
                 </option>
                 <option>
                     <name>IlinkLogCallGraph</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkIcfFile_AltDefault</name>
@@ -990,6 +996,10 @@
                 <option>
                     <name>IlinkLocaleSelect</name>
                     <state>1</state>
+                </option>
+                <option>
+                    <name>IlinkTrustzoneImportLibraryOut</name>
+                    <state>NRF52832-BME280-RADIO_import_lib.o</state>
                 </option>
             </data>
         </settings>
@@ -1020,6 +1030,60 @@
             <data />
         </settings>
     </configuration>
+    <group>
+        <name>core</name>
+        <group>
+            <name>inc</name>
+            <group>
+                <name>CMSIS</name>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\cmsis_gcc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cm4.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmFunc.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmInstr.h</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\..\core\inc\CMSIS\core_cmSimd.h</name>
+                </file>
+            </group>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\compiler_abstraction.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf51_to_nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52_bitfields.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\nrf52_name_change.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\inc\system_nrf52.h</name>
+            </file>
+        </group>
+        <group>
+            <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\src\iar_startup_nrf52.s</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\core\src\system_nrf52.c</name>
+            </file>
+        </group>
+    </group>
     <file>
         <name>$PROJ_DIR$\..\..\main.c</name>
     </file>
