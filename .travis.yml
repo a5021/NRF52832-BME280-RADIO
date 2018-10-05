@@ -31,5 +31,5 @@ before_script:
 
 script:
 - ls
-- cd NRF52832-BME280-RADIO/IDE/armgcc
+- cd IDE/armgcc
 - make
