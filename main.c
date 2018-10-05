@@ -175,7 +175,7 @@ __STATIC_INLINE void init_rtc(void) {
     while (*s != 0) {
       UART_PUTC(*s++);
     }
-    return !0;
+    return 1;
   }
 
   #define uprintf(...) for(char _b[100]; snprintf(_b, sizeof(_b), __VA_ARGS__), uart_puts(_b), 0;){}
@@ -270,10 +270,12 @@ __STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_dat
 }
 
 __STATIC_INLINE uint32_t compensate_pressure(uint32_t u_press, bme280_calib_data_t *c) {
-  int64_t var1, var2, var3, var4;
+
+  #define pressure_min 3000000UL
+  #define pressure_max 11000000UL
+
+  int64_t var1, var2, var3;
   uint32_t pressure;
-  uint32_t pressure_min = 3000000;
-  uint32_t pressure_max = 11000000;
 
   var1 = ((int64_t)c->t_fine) - 128000;
   var2 = var1 * var1 * (int64_t)c->P6;
@@ -285,7 +287,7 @@ __STATIC_INLINE uint32_t compensate_pressure(uint32_t u_press, bme280_calib_data
 
   /* To avoid divide by zero exception */
   if (var1 != 0) {
-    var4 = 1048576 - u_press;
+    int64_t var4 = 1048576 - u_press;
     var4 = (((var4 * 2147483648) - var2) * 3125) / var1;
     var1 = (((int64_t)c->P9) * (var4 / 8192) * (var4 / 8192)) / 33554432;
     var2 = (((int64_t)c->P8) * var4) / 524288;
