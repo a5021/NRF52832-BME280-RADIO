@@ -30,6 +30,11 @@ before_script:
   - arm-none-eabi-gcc --version
 
 script:
+- pushd .
 - ls
+- cd $HOME
+- pwd
+- popd
+- pwd
 - cd IDE/armgcc
 - make
