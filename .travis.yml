@@ -30,5 +30,6 @@ before_script:
   - arm-none-eabi-gcc --version
 
 script:
+- ls
 - cd NRF52832-BME280-RADIO/IDE/armgcc
 - make
