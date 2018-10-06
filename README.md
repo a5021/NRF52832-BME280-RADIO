@@ -1,4 +1,4 @@
-NRF52832-BME280-RADIO
+# NRF52832-BME280-RADIO
 
 Wireless sensor firmware.
 
