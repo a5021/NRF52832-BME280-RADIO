@@ -481,15 +481,15 @@ int main(void) {
 
     NRF_TEMP->TASKS_START = 1; /** Start the temperature measurement. */
 
-    /* Busy wait while temperature measurement is not finished*/
+    /* Busy wait while temperature measurement is not finished */
     while (NRF_TEMP->EVENTS_DATARDY == 0);
     NRF_TEMP->EVENTS_DATARDY = 0;
 
-    /**@note Workaround for PAN_028 rev2.0A anomaly 29 - TEMP: Stop task clears the TEMP register. */
+    /* Workaround for PAN_028 rev2.0A anomaly 29 - TEMP: Stop task clears the TEMP register. */
     payload_buf.t0 = READ_TEMP() / 4;
 
-    /**@note Workaround for PAN_028 rev2.0A anomaly 30 - TEMP: Temp module analog front end does not power down when DATARDY event occurs. */
-    NRF_TEMP->TASKS_STOP = 1; /** Stop the temperature measurement. */
+    /* Workaround for PAN_028 rev2.0A anomaly 30 - TEMP: Temp module analog front end does not power down when DATARDY event occurs. */
+    NRF_TEMP->TASKS_STOP = 1; /* Stop the temperature measurement. */
 
     payload_buf.t = compensate_temperature(TEMP_EXP(buf), &c_data);
     payload_buf.p = compensate_pressure(PRESS_EXP(buf), &c_data);
