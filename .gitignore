@@ -24,7 +24,7 @@
 *.uvguix.*
 *.scvd
 *.tmp
-*.emSess*
+*.__emSess*
 *.jdebu*
 **/arm/JLinkLog.txt
 **/_viminfo
@@ -36,5 +36,4 @@ IDE/armcc/_build/
 IDE/armgcc/_build/
 IDE/armcc/RTE/
 IDE/iar/nrf52832_xxaa/
-IDE/ses/nrf52832_xxaa/
 settings/
