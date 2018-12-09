@@ -30,6 +30,7 @@
 **/_viminfo
 **/_vimtags
 **/_build/
+**/Output/
 JLinkLog.txt
 IDE/armcc/_build/
 IDE/armgcc/_build/

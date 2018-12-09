@@ -8,61 +8,79 @@
       arm_endian="Little"
       arm_fp_abi="Hard"
       arm_fpu_type="FPv4-SP-D16"
+      arm_linker_heap_size="1024"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="1024"
       arm_linker_variant="SEGGER"
       arm_simulator_memory_simulation_parameter="RX 00000000,00080000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
       arm_target_device_name="nRF52832_xxAA"
       arm_target_interface_type="SWD"
-      debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
-      link_linker_script_file="$(StudioDir)/samples/SEGGER_Flash.icf"
-      linker_section_placements_segments="FLASH RX 0x00000000 0x00080000;SRAM RWX 0x20000000 0x00010000"
-      project_directory="."
+      link_linker_script_file="$(ProjectDir)/SEGGER_Flash.icf"
+      linker_output_format="hex"
+      linker_section_placements_segments="FLASH RX 0x00000000 0x00080000;RAM RWX 0x20000000 0x00010000"
+      project_directory=""
       project_type="Executable" />
-    <folder Name="Internal Files">
-      <file file_name="$(StudioDir)/samples/Cortex_M_Startup.s" />
-      <file file_name="$(StudioDir)/samples/SEGGER_THUMB_Startup.s" />
-    </folder>
-    <configuration
-      Name="nrf52832_xxaa"
-      arm_assembler_variant="gcc"
-      arm_compiler_variant="gcc"
-      arm_keep_assembly="Yes"
-      arm_keep_preprocessor_output="Yes"
-      build_intermediate_directory="nrf52832_xxaa/Obj"
-      build_output_directory="nrf52832_xxaa/Exe"
-      c_preprocessor_definitions="NRF52832_XXAA;NDEBUG"
-      c_user_include_directories="../../core/inc;../../core/inc/CMSIS"
-      gcc_c_language_standard="gnu11"
-      gcc_cplusplus_language_standard="gnu++1z"
-      linker_output_format="hex" />
     <folder Name="Source Files">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="../../main.c" />
     </folder>
-    <folder Name="core">
-      <folder Name="inc">
-        <folder Name="CMSIS">
-          <file file_name="../../core/inc/CMSIS/cmsis_gcc.h" />
-          <file file_name="../../core/inc/CMSIS/core_cm4.h" />
-          <file file_name="../../core/inc/CMSIS/core_cmFunc.h" />
-          <file file_name="../../core/inc/CMSIS/core_cmInstr.h" />
-          <file file_name="../../core/inc/CMSIS/core_cmSimd.h" />
-        </folder>
-        <file file_name="../../core/inc/compiler_abstraction.h" />
-        <file file_name="../../core/inc/nrf.h" />
-        <file file_name="../../core/inc/nrf51_to_nrf52.h" />
-        <file file_name="../../core/inc/nrf52.h" />
-        <file file_name="../../core/inc/nrf52_bitfields.h" />
-        <file file_name="../../core/inc/nrf52_name_change.h" />
-        <file file_name="../../core/inc/system_nrf52.h" />
-      </folder>
-      <folder Name="src">
-        <file file_name="../../core/src/system_nrf52.c" />
-      </folder>
+    <folder Name="RTT Files">
+      <file file_name="SEGGER_RTT.c" />
+      <file file_name="SEGGER_RTT.h" />
+      <file file_name="SEGGER_RTT_Conf.h" />
+      <file file_name="SEGGER_RTT_Syscalls_SES.c" />
     </folder>
+    <folder Name="System Files">
+      <file file_name="Cortex_M_Startup.s" />
+      <file file_name="HardFaultHandler.S" />
+      <file file_name="SEGGER_HardFaultHandler.c" />
+      <file file_name="SEGGER_THUMB_Startup.s" />
+    </folder>
+    <configuration
+      CMSIS_CORE="Yes"
+      CMSIS_DSP="Cortex-M4 Little Endian With FPU"
+      Name="Debug"
+      arm_assembler_variant="clang"
+      arm_compiler_variant="clang"
+      c_preprocessor_definitions="NRF52832_XXAA"
+      c_system_include_directories="$(StudioDir)/include;$(PackagesDir)/include;$(PackagesDir)/CMSIS_5/CMSIS/Core/Include;../../core/inc"
+      gcc_c_language_standard="c11"
+      gcc_cplusplus_language_standard="c++1z"
+      gcc_debugging_level="Level 3"
+      gcc_dwarf_version="dwarf-4" />
+    <configuration
+      CMSIS_CORE="Yes"
+      CMSIS_DSP="Cortex-M4 Little Endian With FPU"
+      Name="Release"
+      arm_assembler_variant="clang"
+      arm_compiler_variant="clang"
+      arm_linker_treat_warnings_as_errors="Yes"
+      build_debug_information="No"
+      build_treat_warnings_as_errors="Yes"
+      c_preprocessor_definitions="NRF52832_XXAA"
+      c_system_include_directories="$(StudioDir)/include;$(PackagesDir)/include;../../core/inc"
+      clang_merge_globals="Yes"
+      gcc_c_language_standard="c11"
+      gcc_cplusplus_language_standard="c++1z"
+      gcc_optimization_level="Level 3"
+      gcc_strip_symbols="Yes"
+      link_dedupe_code="Yes"
+      link_dedupe_data="Yes"
+      link_inline="Yes"
+      link_merge_strings="No"
+      link_time_optimization="Yes"
+      linker_strip_debug_information="Yes" />
   </project>
-  <configuration Name="Internal" hidden="Yes" />
   <configuration
-    Name="nrf52832_xxaa"
-    arm_supply_absolute_file_path="No"
-    inherited_configurations="Internal" />
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 3"
+    gcc_optimization_level="None" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_debugging_level="None"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="Level 1" />
 </solution>
