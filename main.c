@@ -501,7 +501,7 @@ int main(void) {
 #ifdef USE_UART
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
     NRF_UART0->TASKS_STARTTX = 1;
-    uprintf("%d.%02dC,\t\t %d.%02d Pa / %d.%02d mmHg,\t %d.%02d%%\t D/I = %u/%u 0x%02X  0x%02X\r\n", payload_buf.t / 100, payload_buf.t % 100, payload_buf.p / 100, payload_buf.p % 100, payload_buf.p / 13332, payload_buf.p % 13332 * 100 / 13332, payload_buf.h / 1000, payload_buf.h % 1000, (uint32_t) sizeof(s), payload_buf.i, a_st, NRF_CLOCK->HFCLKSTAT);
+    uprintf("%d.%02uC,\t\t %u.%02u Pa / %u.%02u mmHg,\t %u.%02u%%\t D/I = %u/%u 0x%02X  0x%02X\r\n", payload_buf.t / 100, (unsigned) payload_buf.t % 100, payload_buf.p / 100, payload_buf.p % 100, payload_buf.p / 13332, payload_buf.p % 13332 * 100 / 13332, payload_buf.h / 1000, payload_buf.h % 1000, (uint32_t) sizeof(s), payload_buf.i, a_st, NRF_CLOCK->HFCLKSTAT);
 #endif
 
     NRF_RADIO->EVENTS_END = 0;
