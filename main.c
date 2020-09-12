@@ -1,6 +1,16 @@
-/*********  Copyright (c) 2018, a5021 *****************************************/
+/*********  Copyright (c) 2018-2020, a5021 ************************************/
+
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wuninitialized"
+#endif
 
 #include "nrf.h"
+
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#endif
+
 
 #ifdef USE_UART
   #include <stdio.h>
@@ -28,7 +38,7 @@
 #define CRCPOLY8                          0x107UL
 #define CRCINIT16                         0xFFFFUL
 #define CRCPOLY16                         0x11021UL
-// width=24 poly=0x00065b init=0x555555 refin=true refout=true xorout=0x000000 check=0xc25a56 residue=0x000000 name="CRC-24/BLE"
+/* width=24 poly=0x00065b init=0x555555 refin=true refout=true xorout=0x000000 check=0xc25a56 residue=0x000000 name="CRC-24/BLE" */
 #define CRCINIT24                         0x555555UL
 #define CRCPOLY24                         0x00065bUL
 
@@ -81,6 +91,11 @@ typedef enum {
   P_T_H_DATA_LEN                        = 8
 } bme280_len_t;
 
+#if defined(__clang__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wpadded"
+#endif
+
 typedef struct {
   uint16_t T1;
   int16_t  T2;
@@ -102,6 +117,12 @@ typedef struct {
   int8_t   H6;
   int32_t  t_fine;
 } bme280_calib_data_t ;
+
+#if defined(__clang__)
+  #pragma clang diagnostic pop
+#endif
+
+
 
 #define PRESS_EXP(D) ((uint32_t)D[0] << 12) | ((uint32_t)D[1] << 4) | (D[2] >> 4)
 #define TEMP_EXP(D)  ((uint32_t)D[3] << 12) | ((uint32_t)D[4] << 4) | (D[5] >> 4)
@@ -139,6 +160,7 @@ __STATIC_INLINE void init_radio(uint8_t freq, uint8_t *payload) {
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
 
+
 __STATIC_INLINE void init_twi(uint8_t twi_addr) {
   NRF_TWIx->ENABLE = TWI_ENABLE_ENABLE_Enabled << TWI_ENABLE_ENABLE_Pos; /* Enable I2C       */
 
@@ -147,6 +169,7 @@ __STATIC_INLINE void init_twi(uint8_t twi_addr) {
   NRF_TWIx->PSELSDA = SDA_PIN;                    /* Define SDA pin                          */
   NRF_TWIx->PSELSCL = SCL_PIN;                    /* Define SCL pin                          */
 }
+
 
 __STATIC_INLINE void init_rtc(void) {
   NRF_RTC2->PRESCALER = 1;                        /* freq = 32768 / 2                        */
@@ -158,6 +181,8 @@ __STATIC_INLINE void init_rtc(void) {
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   // do not use NVIC_EnableIRQ(RTC2_IRQn); !!!
 }
+
+
 #ifdef USE_UART
   void __STATIC_INLINE init_uart(void) {
     NRF_UART0->PSELTXD       = UART_TX_PIN;
@@ -178,8 +203,9 @@ __STATIC_INLINE void init_rtc(void) {
     return 1;
   }
 
-  #define uprintf(...) for(char _b[100]; snprintf(_b, sizeof(_b), __VA_ARGS__), uart_puts(_b), 0;){}
+  #define PRINTF(...) for(char _[100]; snprintf(_, sizeof(_), __VA_ARGS__), uart_puts(_), 0;)
 #endif
+    
 
 #define TWI_CHECK_ERR() if (NRF_TWIx->EVENTS_ERROR) { \
   NRF_TWIx->TASKS_STOP = 1;                           \
@@ -188,11 +214,13 @@ __STATIC_INLINE void init_rtc(void) {
   return TWI_ERROR;                                   \
 }
 
-#define TWI_WAIT(FLAG) while(!FLAG) TWI_CHECK_ERR()
+#define TWI_WAIT(FLAG) do {while(!FLAG) TWI_CHECK_ERR();} while(0)
+
 
 #define TWI_XFER(T, E)                                \
   NRF_TWIx->TASKS_##T = 1;                            \
   TWI_WAIT(NRF_TWIx->EVENTS_##E)
+
 
 __STATIC_INLINE uint8_t twi_read(uint8_t r, uint8_t *d, uint8_t len) {
 
@@ -206,7 +234,7 @@ __STATIC_INLINE uint8_t twi_read(uint8_t r, uint8_t *d, uint8_t len) {
 
     NRF_TWIx->SHORTS = TWI_SHORTS_BB_STOP_Enabled << TWI_SHORTS_BB_STOP_Pos;
     TWI_XFER(STARTRX, RXDREADY);
-    *d = NRF_TWIx->RXD;
+    *d = (uint8_t)NRF_TWIx->RXD;
 
   } else {
 
@@ -220,7 +248,7 @@ __STATIC_INLINE uint8_t twi_read(uint8_t r, uint8_t *d, uint8_t len) {
       NRF_TWIx->EVENTS_RXDREADY = 0;
       TWI_XFER(RESUME, RXDREADY);
 
-      *d++ = NRF_TWIx->RXD;
+      *d++ = (uint8_t)NRF_TWIx->RXD;
     } while (len);
   }
   WAIT_FOR_EVENT(NRF_TWIx->EVENTS_STOPPED);
@@ -242,11 +270,11 @@ __STATIC_INLINE uint8_t twi_write(uint8_t r, uint8_t d) {
 }
 
 __STATIC_INLINE uint8_t bme280_read(const bme280_reg_addr_t r, uint8_t* d, bme280_len_t len) {
-  return twi_read(r, d, len);
+  return twi_read((uint8_t)r, d, (uint8_t)len);
 }
 
 __STATIC_INLINE uint8_t bme280_write(const bme280_reg_addr_t r, uint8_t d) {
-  return twi_write(r, d);
+  return twi_write((uint8_t)r, d);
 }
 
 __STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_data_t *c) {
@@ -254,9 +282,9 @@ __STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_dat
   int32_t temperature_min = -4000;
   int32_t temperature_max = 8500;
 
-  var1 = (int32_t)((u_temp / 8) - ((int32_t)c->T1 * 2));
+  var1 = (int32_t)(u_temp / 8) - (int32_t)c->T1 * 2;
   var1 = (var1 * ((int32_t)c->T2)) / 2048;
-  var2 = (int32_t)((u_temp / 16) - ((int32_t)c->T1));
+  var2 = (int32_t)(u_temp / 16) - ((int32_t)c->T1);
   var2 = (((var2 * var2) / 4096) * ((int32_t)c->T3)) / 16384;
   c->t_fine = var1 + var2;
   temperature = (c->t_fine * 5 + 128) / 256;
@@ -373,7 +401,6 @@ __STATIC_INLINE void init_adc(void) {
   while (NRF_SAADC->EVENTS_CALIBRATEDONE == 0);
   NRF_SAADC->EVENTS_CALIBRATEDONE = 0;
   while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));
-
 }
 
 __STATIC_INLINE uint32_t measure_vdd(void) {
@@ -402,7 +429,12 @@ __STATIC_INLINE uint32_t measure_vdd(void) {
 
 #define MASK_SIGN           (0x00000200UL)
 #define MASK_SIGN_EXTENSION (0xFFFFFC00UL)
-#define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
+
+#if defined(__clang__)
+  #define READ_TEMP()  (((unsigned)NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (signed)((unsigned)NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
+#else
+  #define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
+#endif
 
 int main(void) {
 
@@ -432,6 +464,11 @@ int main(void) {
   bme280_calib_data_t c_data;
   uint8_t buf[TEMP_PRESS_CALIB_DATA_LEN];
 
+  #if defined(__clang__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wcomma"
+  #endif
+
   while(
     ! bme280_read(CHIP_ID_REG, buf, ID_LEN)                                                ||
     ! (buf[0] == BME280_CHIP_ID)                                                           ||
@@ -451,16 +488,20 @@ int main(void) {
     ! bme280_read(TEMP_PRESS_CALIB_DATA_REG, (uint8_t*)&c_data, TEMP_PRESS_CALIB_DATA_LEN) ||
     ! bme280_read(HUMIDITY_CALIB_DATA_REG, buf, HUMIDITY_CALIB_DATA_LEN)                   ||
     (
-      c_data.H2 = ((int16_t)buf[1] << 8) | buf[0]                            ,
+      c_data.H2 = (int16_t)((int16_t)buf[1] << 8) | buf[0]                   ,
       c_data.H3 = buf[2]                                                     ,
       c_data.H4 = ((int16_t)buf[3] * 16) | (buf[4] & 0x0F)                   ,
       c_data.H5 = ((int16_t)buf[5] * 16) | (buf[4] >> 4)                     ,
-      c_data.H6 = buf[6]                                                     ,
+      c_data.H6 = (int8_t)buf[6]                                             ,
       0
     )                                                                                      ||
     ! bme280_write(CONFIG_REG, BME280_FILTER_COEFF_OFF << BME280_FILTER_POS)               ||
     ! bme280_write(CTRL_HUM_REG, BME280_OVERSAMPLING_1X << BME280_CTRL_HUM_POS)
   );
+
+  #if defined(__clang__)
+    #pragma clang diagnostic pop
+  #endif
 
   init_radio(NRF_FREQ_CHANNEL, (uint8_t*)&payload_buf);
 
@@ -486,7 +527,7 @@ int main(void) {
     NRF_TEMP->EVENTS_DATARDY = 0;
 
     /* Workaround for PAN_028 rev2.0A anomaly 29 - TEMP: Stop task clears the TEMP register. */
-    payload_buf.t0 = READ_TEMP() / 4;
+    payload_buf.t0 = (int8_t)(READ_TEMP() / 4);
 
     /* Workaround for PAN_028 rev2.0A anomaly 30 - TEMP: Temp module analog front end does not power down when DATARDY event occurs. */
     NRF_TEMP->TASKS_STOP = 1; /* Stop the temperature measurement. */
@@ -496,12 +537,12 @@ int main(void) {
     payload_buf.h = compensate_humidity(HUM_EXP(buf),  &c_data) / 10;
     payload_buf.i = ((((payload_buf.i >> 1) + 1) << 1) & 0x06) | 1;
 
-    payload_buf.v = measure_vdd();
+    payload_buf.v = (uint16_t) measure_vdd();
 
 #ifdef USE_UART
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Enabled;
     NRF_UART0->TASKS_STARTTX = 1;
-    uprintf("%d.%02uC,\t\t %u.%02u Pa / %u.%02u mmHg,\t %u.%02u%%\t D/I = %u/%u 0x%02X  0x%02X\r\n", payload_buf.t / 100, (unsigned) payload_buf.t % 100, payload_buf.p / 100, payload_buf.p % 100, payload_buf.p / 13332, payload_buf.p % 13332 * 100 / 13332, payload_buf.h / 1000, payload_buf.h % 1000, (uint32_t) sizeof(s), payload_buf.i, a_st, NRF_CLOCK->HFCLKSTAT);
+    PRINTF("%d.%02uC,\t\t %u.%02u Pa / %u.%02u mmHg,\t %u.%02u%%\t%u\t0x%02X\r\n", payload_buf.t / 100, (unsigned) payload_buf.t % 100, payload_buf.p / 100, payload_buf.p % 100, payload_buf.p / 13332, payload_buf.p % 13332 * 100 / 13332, payload_buf.h / 1000, payload_buf.h % 1000, payload_buf.i, NRF_CLOCK->HFCLKSTAT);
 #endif
 
     NRF_RADIO->EVENTS_END = 0;
@@ -510,7 +551,8 @@ int main(void) {
     WAIT_FOR_EVENT(NRF_RADIO->EVENTS_END);
 
 #ifdef USE_UART
-    uprintf("TX Loop count = %u  \n", a_cnt);
+    static unsigned a_cnt;
+    PRINTF("TX Loop count = %u  \n", ++a_cnt);
     NRF_UART0->TASKS_STOPTX = 1;
     NRF_UART0->ENABLE = UART_ENABLE_ENABLE_Disabled;
 #endif
@@ -535,5 +577,5 @@ int main(void) {
 
     NRF_RTC2->EVENTS_COMPARE[0] = 0;
     NRF_RTC2->TASKS_CLEAR = 1;
- }
+  }
 }
