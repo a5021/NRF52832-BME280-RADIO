@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2009-2018 ARM Limited. All rights reserved.
+Copyright (c) 2009-2020 ARM Limited. All rights reserved.
 
     SPDX-License-Identifier: Apache-2.0
 
@@ -49,7 +49,7 @@ extern void SystemInit (void);
  * @param  none
  * @return none
  *
- * @brief  Updates the SystemCoreClock with current core Clock 
+ * @brief  Updates the SystemCoreClock with current core Clock
  *         retrieved from cpu registers.
  */
 extern void SystemCoreClockUpdate (void);
