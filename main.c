@@ -439,12 +439,7 @@ __STATIC_INLINE uint32_t measure_vdd(void) {
 
 #define MASK_SIGN           (0x00000200UL)
 #define MASK_SIGN_EXTENSION (0xFFFFFC00UL)
-
-#if defined(__clang__)
-  #define READ_TEMP()  (((unsigned)NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (signed)((unsigned)NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
-#else
-  #define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
-#endif
+#define READ_TEMP()  (((unsigned)NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (signed)((unsigned)NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
 
 
 int main(void) {

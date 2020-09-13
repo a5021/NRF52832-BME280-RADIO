@@ -9,14 +9,14 @@ $(OUTPUT_DIRECTORY)/NRF52832-BME280-RADIO.out: \
 
 # Source files common to all targets
 SRC_FILES += \
-  $(PROJ_DIR)/core/src/gcc_startup_nrf52.S \
-  $(PROJ_DIR)/core/src/system_nrf52.c \
+  $(PROJ_DIR)/drv/src/gcc_startup_nrf52.S \
+  $(PROJ_DIR)/drv/src/system_nrf52.c \
   $(PROJ_DIR)/main.c
 
 # Include folders common to all targets
 INC_FOLDERS += \
-  $(PROJ_DIR)/core/inc/CMSIS \
-  $(PROJ_DIR)/core/inc \
+  $(PROJ_DIR)/drv/inc/CMSIS \
+  $(PROJ_DIR)/drv/inc \
 
 # Libraries common to all targets
 LIB_FILES += \
@@ -32,12 +32,12 @@ CFLAGS += -DNRF52832_XXAA
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS += -Wall -Werror -Wpedantic
+CFLAGS += -Wall -Wextra -Werror -Wpedantic -std=gnu11
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
-CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
+#CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
+CFLAGS += -ffunction-sections -fdata-sections -fstrict-aliasing
 CFLAGS += -fno-builtin -fshort-enums
-CFLAGS += -std=gnu11
 
 # C++ flags common to all targets
 CXXFLAGS += $(OPT)
