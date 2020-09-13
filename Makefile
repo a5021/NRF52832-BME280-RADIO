@@ -2,10 +2,10 @@ PROJECT_NAME     := NRF52832-BME280-RADIO
 TARGETS          := NRF52832-BME280-RADIO
 OUTPUT_DIRECTORY := _build
 
-PROJ_DIR := ../..
+PROJ_DIR := .
 
 $(OUTPUT_DIRECTORY)/NRF52832-BME280-RADIO.out: \
-  LINKER_SCRIPT := $(PROJ_DIR)/IDE/armgcc/ld/gcc_nrf52.ld
+  LINKER_SCRIPT := $(PROJ_DIR)/IDE/GCC/ld/gcc_nrf52.ld
 
 # Source files common to all targets
 SRC_FILES += \
@@ -32,11 +32,12 @@ CFLAGS += -DNRF52832_XXAA
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS += -Wall -Werror
+CFLAGS += -Wall -Werror -Wpedantic
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS += -fno-builtin -fshort-enums
+CFLAGS += -std=gnu11
 
 # C++ flags common to all targets
 CXXFLAGS += $(OPT)
@@ -49,7 +50,7 @@ ASMFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 
 # Linker flags
 LDFLAGS += $(OPT) -fverbose-asm
-LDFLAGS += -mthumb -mabi=aapcs -L$(PROJ_DIR)/IDE/armgcc/ld -T$(LINKER_SCRIPT)
+LDFLAGS += -mthumb -mabi=aapcs -L$(PROJ_DIR)/IDE/GCC/ld -T$(LINKER_SCRIPT)
 LDFLAGS += -mcpu=cortex-m4
 LDFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # let linker dump unused sections
@@ -75,7 +76,7 @@ STLINK_FLAGS = -c SWD -V -ME -P $< -Hardrst -Run
 # Default target - first one defined
 default: NRF52832-BME280-RADIO
 
-TEMPLATE_PATH := $(PROJ_DIR)/IDE/armgcc/mk
+TEMPLATE_PATH := $(PROJ_DIR)/IDE/GCC/mk
 
 include $(TEMPLATE_PATH)/Makefile.common
 

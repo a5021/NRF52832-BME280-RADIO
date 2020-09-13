@@ -42,9 +42,9 @@
 #define CRCINIT24                         0x555555UL
 #define CRCPOLY24                         0x00065bUL
 
-// allowed value for `BITS' is: 0, 8, 16, 24
-#define NRF_RADIO_SET_CRC(BITS)           NRF_RADIO->CRCCNF = BITS / 8;        \
-                                          NRF_RADIO->CRCINIT = CRCINIT ## BITS;\
+/***         allowed value for `BITS' is: 0, 8, 16, 24                                      */
+#define NRF_RADIO_SET_CRC(BITS)           NRF_RADIO->CRCCNF = BITS / 8;                      \
+                                          NRF_RADIO->CRCINIT = CRCINIT ## BITS;              \
                                           NRF_RADIO->CRCPOLY = CRCPOLY ## BITS
 
 #define BME280_I2C_ADDR_PRIM              0x76
@@ -123,7 +123,6 @@ typedef struct {
 #endif
 
 
-
 #define PRESS_EXP(D) ((uint32_t)D[0] << 12) | ((uint32_t)D[1] << 4) | (D[2] >> 4)
 #define TEMP_EXP(D)  ((uint32_t)D[3] << 12) | ((uint32_t)D[4] << 4) | (D[5] >> 4)
 #define HUM_EXP(D)   ((uint32_t)D[6] << 8)  | D[7]
@@ -156,7 +155,7 @@ __STATIC_INLINE void init_radio(uint8_t freq, uint8_t *payload) {
 
   NRF_RADIO_SET_CRC(16);                          /* Set 16 bit CRC mode                     */
 
-  NRF_RADIO->PACKETPTR = (uint32_t)payload;       /* Set TX buffer pointer                   */
+  NRF_RADIO->PACKETPTR = (uint32_t) payload;      /* Set TX buffer pointer                   */
   NRF_RADIO->TASKS_TXEN = 1;                      /* Enable RADIO in TX mode                 */
 }
 
@@ -256,6 +255,7 @@ __STATIC_INLINE uint8_t twi_read(uint8_t r, uint8_t *d, uint8_t len) {
   return TWI_OK;
 }
 
+
 __STATIC_INLINE uint8_t twi_write(uint8_t r, uint8_t d) {
 
   NRF_TWIx->TXD = r;
@@ -269,13 +269,16 @@ __STATIC_INLINE uint8_t twi_write(uint8_t r, uint8_t d) {
   return TWI_OK;
 }
 
+
 __STATIC_INLINE uint8_t bme280_read(const bme280_reg_addr_t r, uint8_t* d, bme280_len_t len) {
   return twi_read((uint8_t)r, d, (uint8_t)len);
 }
 
+
 __STATIC_INLINE uint8_t bme280_write(const bme280_reg_addr_t r, uint8_t d) {
   return twi_write((uint8_t)r, d);
 }
+
 
 __STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_data_t *c) {
   int32_t var1, var2, temperature;
@@ -296,6 +299,7 @@ __STATIC_INLINE int32_t compensate_temperature(uint32_t u_temp, bme280_calib_dat
 
   return temperature;
 }
+
 
 __STATIC_INLINE uint32_t compensate_pressure(uint32_t u_press, bme280_calib_data_t *c) {
 
@@ -332,6 +336,7 @@ __STATIC_INLINE uint32_t compensate_pressure(uint32_t u_press, bme280_calib_data
   return pressure;
 }
 
+
 __STATIC_INLINE uint32_t compensate_humidity(uint32_t u_hum,  bme280_calib_data_t *c) {
   int32_t var1, var2, var3, var4, var5;
 
@@ -357,11 +362,13 @@ __STATIC_INLINE uint32_t compensate_humidity(uint32_t u_hum,  bme280_calib_data_
   return humidity;
 }
 
+
 __STATIC_INLINE void sleep(void) {
   NVIC_ClearPendingIRQ(RTC2_IRQn);
   NRF_POWER->TASKS_LOWPWR = 1;
   __WFE();
 }
+
 
 __STATIC_INLINE void init_clock(void) {
   /* Start 32 MHz crystal oscillator */
@@ -379,6 +386,7 @@ __STATIC_INLINE void init_clock(void) {
   /* Wait for the external oscillator to start up */
   while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0);
 }
+
 
 __STATIC_INLINE void init_adc(void) {
   NRF_SAADC->RESOLUTION = SAADC_RESOLUTION_VAL_12bit;
@@ -402,6 +410,7 @@ __STATIC_INLINE void init_adc(void) {
   NRF_SAADC->EVENTS_CALIBRATEDONE = 0;
   while (NRF_SAADC->STATUS == (SAADC_STATUS_STATUS_Busy <<SAADC_STATUS_STATUS_Pos));
 }
+
 
 __STATIC_INLINE uint32_t measure_vdd(void) {
 
@@ -427,6 +436,7 @@ __STATIC_INLINE uint32_t measure_vdd(void) {
   return res * 3600 / 4095;
 }
 
+
 #define MASK_SIGN           (0x00000200UL)
 #define MASK_SIGN_EXTENSION (0xFFFFFC00UL)
 
@@ -435,6 +445,7 @@ __STATIC_INLINE uint32_t measure_vdd(void) {
 #else
   #define READ_TEMP() ((NRF_TEMP->TEMP & MASK_SIGN) != 0) ? (NRF_TEMP->TEMP | MASK_SIGN_EXTENSION) : (NRF_TEMP->TEMP)
 #endif
+
 
 int main(void) {
 

@@ -11,11 +11,6 @@ matrix:
     - name: 9-2020-q2-update
       env: GCC_URL=https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
 
-addons:
-  apt:
-    packages:
-    - libc6-i386 
-
 install:
   - pushd .
   - cd ~ 
@@ -30,5 +25,4 @@ before_script:
   - arm-none-eabi-gcc --version
 
 script:
-  - cd IDE/armgcc
   - make
