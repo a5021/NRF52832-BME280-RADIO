@@ -17,5 +17,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gcc-arm-none-eabi
 
+      - name: Symlink toolchain to expected path
+        run: |
+          sudo mkdir -p /home/travis/arm-gcc-toolchain/bin
+          sudo ln -s /usr/bin/arm-none-eabi-* /home/travis/arm-gcc-toolchain/bin/
+
       - name: Build
         run: make
