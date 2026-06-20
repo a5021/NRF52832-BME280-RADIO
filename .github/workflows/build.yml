@@ -12,15 +12,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cache ARM GCC toolchain
+        id: cache-toolchain
+        uses: actions/cache@v4
+        with:
+          path: /home/travis/arm-gcc-toolchain
+          key: arm-gcc-9-2020-q2-update
+
       - name: Install ARM GCC toolchain
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-arm-none-eabi
+          sudo apt-get install -y xz-utils wget
+          sudo mkdir -p /home/travis/arm-gcc-toolchain
+          wget -qO- "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2" \
+            | sudo tar -xjf - -C /home/travis/arm-gcc-toolchain --strip=1
 
-      - name: Symlink toolchain to expected path
-        run: |
-          sudo mkdir -p /home/travis/arm-gcc-toolchain/bin
-          sudo ln -s /usr/bin/arm-none-eabi-* /home/travis/arm-gcc-toolchain/bin/
+      - name: Symlink toolchain binaries
+        run: sudo ln -sf /home/travis/arm-gcc-toolchain/bin/arm-none-eabi-* /usr/local/bin/
 
       - name: Build
         run: make
