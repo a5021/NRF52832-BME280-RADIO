@@ -1,10 +1,6 @@
 # NRF52832-BME280-RADIO
 
-[![Build](https://github.com/a5021/NRF52832-BME280-RADIO/actions/workflows/build.yml/badge.svg)](https://github.com/a5021/NRF52832-BME280-RADIO/actions/workflows/build.yml) [![MCU](https://img.shields.io/badge/MCU-nRF52832-00A9E0)](https://www.nordicsemi.com/Products/nRF52832) [![Sensor](https://img.shields.io/badge/Sensor-BME280-00A9E0)](https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/) [![Radio](https://img.shields.io/badge/Radio-2.4GHz_2Mbit-00A9E0)]()
-
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-
-Bare-metal firmware for an nRF52832-based wireless environmental sensor node. Reads Bosch BME280 (temperature, pressure, humidity) and on-chip die temperature, then transmits the data packet over a 2.4 GHz proprietary radio link.
+[![Build](https://github.com/a5021/NRF52832-BME280-RADIO/actions/workflows/build.yml/badge.svg)](https://github.com/a5021/NRF52832-BME280-RADIO/actions/workflows/build.yml) [![MCU](https://img.shields.io/badge/MCU-nRF52832-00A9E0)](https://www.nordicsemi.com/Products/nRF52832) [![Sensor](https://img.shields.io/badge/Sensor-BME280-00A9E0)](https://www.bosch-sensortec.com/products/environmental-sensors/humidity-sensors-bme280/) [![Radio](https://img.shields.io/badge/Radio-2.4GHz_2Mbit-00A9E0)]() [![IDE](https://img.shields.io/badge/IDE-Make%20%7C%20EWARM%20%7C%20MDK--ARM%20%7C%20SES-00A9E0)]() [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ## Features
 
